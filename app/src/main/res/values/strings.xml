@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">NoiseClassifier_Android_Tensorflow</string>
+    <string name="rekam_suara_jantung">rekam suara jantung</string>
+    <string name="cek_status_jantung">cek status jantung</string>
+    <string name="informasi">Informasi</string>
+    <string name="pastikan_anda_memiliki_device_stetoskop_digital">pastikan anda memiliki device stetoskop digital</string>
+    <string name="halo">halo</string>
+    <string name="home">home</string>
+    <string name="favorite">favorite</string>
+    <string name="account">account</string>
+    <string name="setting">setting</string>
+    <string name="kembali">kembali</string>
+    <string name="rekam">rekam</string>
+    <string name="upload">upload</string>
+</resources>
