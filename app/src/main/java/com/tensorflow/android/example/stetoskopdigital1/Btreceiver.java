@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
 
@@ -49,6 +50,7 @@ public class Btreceiver extends AppCompatActivity {
     Button btnDisconnect;
     private BluetoothDevice device;
     private boolean isConnected = false;
+    String data = "samples";
 
     ArrayAdapter<String> pairedDeviceAdapter;
     private UUID myUUID;
@@ -56,6 +58,7 @@ public class Btreceiver extends AppCompatActivity {
     ThreadConnectBTdevice myThreadConnectBTdevice;
     ThreadConnected myThreadConnected;
 
+    @RequiresApi(api = Build.VERSION_CODES.S)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +78,7 @@ public class Btreceiver extends AppCompatActivity {
             if (myThreadConnectBTdevice != null) {
                 myThreadConnectBTdevice.cancel();
             }
+            saveAudio(data);
         });
 
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)) {
@@ -234,12 +238,12 @@ public class Btreceiver extends AppCompatActivity {
 
                     listViewPairedDevice.setVisibility(View.GONE);
                     pane.setVisibility(View.VISIBLE);
-                    isConnected = true;
 //                    startActivity(new Intent(Btreceiver.this,RekamSuara.class));
 //                    finish();
                 });
 
                 startThreadConnected(bluetoothSocket);
+                isConnected = true;
 
             }
         }
@@ -268,6 +272,7 @@ public class Btreceiver extends AppCompatActivity {
             try {
                 in = socket.getInputStream();
                 out = socket.getOutputStream();
+                out.write(1024);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -279,23 +284,28 @@ public class Btreceiver extends AppCompatActivity {
         @Override
         public void run() {
             byte[] buffer = new byte[1024];
-            int bytes;
+            int bytes = 0;
 
-            // Kayaknya ini datanya
+            // continuous data
             while (isConnected) {
                 try {
                     bytes = connectedInputStream.read(buffer);
+
                     //Log.i("Data masuk : ", String.valueOf(bytes));
                     final String strReceived = new String(buffer, 0, bytes);
                     Log.v("Data masuk1 : ", strReceived);
+                    data = strReceived;
+//
 
-                    saveAudio(strReceived);
+//                    byte data = (byte) connectedInputStream.read();
 
                     runOnUiThread(() -> textStatus.append(strReceived));
 
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
+                    isConnected = false;
+//                    saveAudio("sdsdsd");
 
                     final String msgConnectionLost = "Connection lost:  "
                             + e.getMessage();
@@ -303,39 +313,38 @@ public class Btreceiver extends AppCompatActivity {
                 }
             }
         }
+    }
 
-        @RequiresApi(api = Build.VERSION_CODES.S)
-        private void saveAudio(String data) {
-            if (isExtStorageWritable() && checkPermission()) {
-                try {
-                    ContextWrapper contextWrapper = new ContextWrapper(Btreceiver.this);
-                    File audioDir = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_RECORDINGS);
-                    File files = new File(audioDir,System.currentTimeMillis()+".wav");
-                    FileOutputStream fos = new FileOutputStream(files);
-                    fos.write(data.getBytes());
-                    fos.close();
-                    Toast.makeText(Btreceiver.this, "saved to "+audioDir.getAbsolutePath(), Toast.LENGTH_LONG).show();
-                } catch (Exception e) {
-                    Toast.makeText(Btreceiver.this, e.toString(), Toast.LENGTH_LONG).show();
-                }
-            } else {
-                Toast.makeText(Btreceiver.this, "Cant write data", Toast.LENGTH_LONG).show();
+    @RequiresApi(api = Build.VERSION_CODES.S)
+    private void saveAudio(String data) {
+        if (isExtStorageWritable() && checkPermission()) {
+            try {
+                ContextWrapper contextWrapper = new ContextWrapper(this);
+                File audioDir = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_RECORDINGS);
+                File files = new File(audioDir,System.currentTimeMillis()+".wav");
+                FileOutputStream fos = new FileOutputStream(files);
+                fos.write(data.getBytes());
+                fos.close();
+                Toast.makeText(Btreceiver.this, "saved to "+audioDir.getAbsolutePath(), Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                Toast.makeText(Btreceiver.this, e.toString(), Toast.LENGTH_LONG).show();
             }
+        } else {
+            Toast.makeText(Btreceiver.this, "Cant write data", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private boolean checkPermission() {
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST_PERMISSION);
         }
 
-        private boolean checkPermission() {
-            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST_PERMISSION);
-            }
+        int check = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        return check == PackageManager.PERMISSION_GRANTED;
+    }
 
-            int check = ContextCompat.checkSelfPermission(Btreceiver.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            return check == PackageManager.PERMISSION_GRANTED;
-        }
-
-        private boolean isExtStorageWritable() {
-            return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
-        }
-
+    private boolean isExtStorageWritable() {
+        return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.S)
@@ -344,7 +353,7 @@ public class Btreceiver extends AppCompatActivity {
             requestPermissions(new String[]{Manifest.permission.BLUETOOTH_CONNECT},REQUEST_PERMISSION);
         }
 
-        int check = ContextCompat.checkSelfPermission(Btreceiver.this, Manifest.permission.BLUETOOTH_CONNECT);
+        int check = ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT);
         return check == PackageManager.PERMISSION_GRANTED;
     }
 }

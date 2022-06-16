@@ -27,6 +27,7 @@ import org.tensorflow.lite.support.label.TensorLabel
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 import java.io.File
 import java.io.IOException
+import java.lang.IllegalArgumentException
 import java.lang.NullPointerException
 import java.math.RoundingMode
 import java.nio.ByteBuffer
@@ -83,8 +84,12 @@ class MainActivity : AppCompatActivity() {
                 val selFilePath = spinner.selectedItem.toString()
                 val audioFilePath = "$audioDirPath/$selFilePath";
                 if (!TextUtils.isEmpty(selFilePath)) {
-                    val result = "Predicted Noise : ${classifyNoise(audioFilePath)}"
-                    result_text.text = result
+                    try {
+                        val result = "Predicted Noise : ${classifyNoise(audioFilePath)}"
+                        result_text.text = result
+                    } catch (e: IllegalArgumentException) {
+                        Toast.makeText(this@MainActivity, e.toString(), Toast.LENGTH_LONG).show();
+                    }
                 } else {
                     Toast.makeText(this@MainActivity, "Please enter a message.", Toast.LENGTH_LONG).show();
                 }
