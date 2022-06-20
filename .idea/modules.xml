@@ -7,6 +7,10 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/NoiseClassifier_Android_Tensorflow.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/NoiseClassifier_Android_Tensorflow.app.androidTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/NoiseClassifier_Android_Tensorflow.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/NoiseClassifier_Android_Tensorflow.app.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/NoiseClassifier_Android_Tensorflow.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/NoiseClassifier_Android_Tensorflow.app.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mqtt/NoiseClassifier_Android_Tensorflow.mqtt.iml" filepath="$PROJECT_DIR$/.idea/modules/mqtt/NoiseClassifier_Android_Tensorflow.mqtt.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mqtt/NoiseClassifier_Android_Tensorflow.mqtt.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/mqtt/NoiseClassifier_Android_Tensorflow.mqtt.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mqtt/NoiseClassifier_Android_Tensorflow.mqtt.main.iml" filepath="$PROJECT_DIR$/.idea/modules/mqtt/NoiseClassifier_Android_Tensorflow.mqtt.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mqtt/NoiseClassifier_Android_Tensorflow.mqtt.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/mqtt/NoiseClassifier_Android_Tensorflow.mqtt.unitTest.iml" />
     </modules>
   </component>
 </project>

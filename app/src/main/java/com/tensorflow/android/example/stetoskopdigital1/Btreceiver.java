@@ -10,8 +10,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-//import android.support.v7.app.ActionBarActivity;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -23,9 +23,9 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.ansori.mqtt.MqttClient;
 import com.tensorflow.android.R;
 
 import java.io.File;
@@ -34,13 +34,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
 
+@RequiresApi(api = Build.VERSION_CODES.S)
 public class Btreceiver extends AppCompatActivity {
 
     private static final int REQUEST_PERMISSION = 1;
+    private static final int INTERVAL = 10000;
+    public static final String TAG_ID = "id";
+    public static final String TAG_USERNAME = "username";
     BluetoothAdapter bluetoothAdapter;
     ArrayList<BluetoothDevice> pairedDeviceArrayList;
     TextView textStatus;
@@ -49,47 +52,54 @@ public class Btreceiver extends AppCompatActivity {
     LinearLayout pane;
     Button btnDisconnect;
     private BluetoothDevice device;
-    private boolean isConnected = false;
     String data = "samples";
+    Handler handler = new Handler();
+    Runnable runnable;
+    private MqttClient client;
+    String id, username;
+    private boolean isConnected = false;
 
     ArrayAdapter<String> pairedDeviceAdapter;
     private UUID myUUID;
-    private final String UUID_STRING_WELL_KNOWN_SPP = "00001101-0000-1000-8000-00805F9B34FB";
     ThreadConnectBTdevice myThreadConnectBTdevice;
     ThreadConnected myThreadConnected;
 
-    @RequiresApi(api = Build.VERSION_CODES.S)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bluetoothrecord);
 
-//        Toast.makeText(this, "Pair your device first before using the app", Toast.LENGTH_LONG).show();
+        // get string intent
+        id = getIntent().getStringExtra(TAG_ID);
+        username = getIntent().getStringExtra(TAG_USERNAME);
+
+        Toast.makeText(this, "Pair your device first before using the app", Toast.LENGTH_LONG).show();
 
         refresh = findViewById(R.id.refresh);
         textStatus = findViewById(R.id.status);
         listViewPairedDevice = findViewById(R.id.pairedlist);
-
         pane = findViewById(R.id.clearPane);
+        btnDisconnect = findViewById(R.id.disconnect);
+
+        // mqtt service object
+        client = new MqttClient(this);
 
         refresh.setOnClickListener(v -> startActivity(new Intent(Btreceiver.this, Btreceiver.class)));
-        btnDisconnect = findViewById(R.id.disconnect);
         btnDisconnect.setOnClickListener(v -> {
             if (myThreadConnectBTdevice != null) {
                 myThreadConnectBTdevice.cancel();
+                isConnected = false;
             }
-            saveAudio(data);
         });
 
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)) {
-            Toast.makeText(this,
-                    "Your device does not support Bluetooth",
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Your device does not support Bluetooth", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
 
         //using the well-known SPP UUID
+        String UUID_STRING_WELL_KNOWN_SPP = "00001101-0000-1000-8000-00805F9B34FB";
         myUUID = UUID.fromString(UUID_STRING_WELL_KNOWN_SPP);
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -98,14 +108,13 @@ public class Btreceiver extends AppCompatActivity {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.S)
     @Override
     protected void onStart() {
         super.onStart();
 
         //Turn ON BlueTooth if it is OFF
         if (!bluetoothAdapter.isEnabled()) {
-            Intent enableIntent = null;
+            Intent enableIntent;
             if (checkBtPermission()) {
                 enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableIntent, REQUEST_PERMISSION);
@@ -115,25 +124,21 @@ public class Btreceiver extends AppCompatActivity {
         setup();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.S)
     private void setup() {
         if (checkBtPermission()) {
             Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
             if (pairedDevices.size() > 0) {
-                pairedDeviceArrayList = new ArrayList<BluetoothDevice>();
+                pairedDeviceArrayList = new ArrayList<>();
 
                 pairedDeviceArrayList.addAll(pairedDevices);
 
-                pairedDeviceAdapter = new ArrayAdapter<String>(this,
+                pairedDeviceAdapter = new ArrayAdapter<>(this,
                         android.R.layout.simple_list_item_1, f(pairedDeviceArrayList));
                 listViewPairedDevice.setAdapter(pairedDeviceAdapter);
 
                 listViewPairedDevice.setOnItemClickListener((parent, view, position, id) -> {
                     device = pairedDeviceArrayList.get(position);
-                    Toast.makeText(Btreceiver.this,
-                            "Connectiong to  " + device.getName()
-                            ,
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(Btreceiver.this, "Connectiong to  " + device.getName(), Toast.LENGTH_LONG).show();
 
                     textStatus.setText("start ThreadConnectBTdevice");
                     myThreadConnectBTdevice = new ThreadConnectBTdevice(device);
@@ -143,7 +148,24 @@ public class Btreceiver extends AppCompatActivity {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.S)
+    @Override
+    protected void onResume() {
+        handler.postDelayed(runnable = () -> {
+            handler.postDelayed(runnable,INTERVAL);
+            if (isConnected) {
+                saveAudio(data);
+                client.getPublish(this,username+"_"+id,data);
+            }
+        },INTERVAL);
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        handler.removeCallbacks(runnable);
+        super.onPause();
+    }
+
     private ArrayList<String> f(ArrayList<BluetoothDevice> pairedDeviceArrayList) {
         ArrayList<String> list = new ArrayList<>();
         if (checkBtPermission()) {
@@ -163,10 +185,10 @@ public class Btreceiver extends AppCompatActivity {
 
         if (myThreadConnectBTdevice != null) {
             myThreadConnectBTdevice.cancel();
+            isConnected = false;
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.S)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -194,7 +216,6 @@ public class Btreceiver extends AppCompatActivity {
 
         private BluetoothSocket bluetoothSocket;
 
-        @RequiresApi(api = Build.VERSION_CODES.S)
         private ThreadConnectBTdevice(BluetoothDevice device) {
             if (checkBtPermission()) {
                 try {
@@ -206,7 +227,6 @@ public class Btreceiver extends AppCompatActivity {
             }
         }
 
-        @RequiresApi(api = Build.VERSION_CODES.S)
         @Override
         public void run() {
             boolean success = false;
@@ -230,6 +250,7 @@ public class Btreceiver extends AppCompatActivity {
             if(success){
                 //connect successful
                 final String connMessage = "Connected to "+device.getName();
+                isConnected = true;
 
                 runOnUiThread(() -> {
 
@@ -238,21 +259,13 @@ public class Btreceiver extends AppCompatActivity {
 
                     listViewPairedDevice.setVisibility(View.GONE);
                     pane.setVisibility(View.VISIBLE);
-//                    startActivity(new Intent(Btreceiver.this,RekamSuara.class));
-//                    finish();
                 });
 
                 startThreadConnected(bluetoothSocket);
-                isConnected = true;
-
             }
         }
 
         public void cancel() {
-
-            Toast.makeText(getApplicationContext(),
-                    "Disconnecting",
-                    Toast.LENGTH_LONG).show();
 
             try {
                 bluetoothSocket.close();
@@ -267,7 +280,7 @@ public class Btreceiver extends AppCompatActivity {
 
         public ThreadConnected(BluetoothSocket socket) {
             InputStream in = null;
-            OutputStream out = null;
+            OutputStream out;
 
             try {
                 in = socket.getInputStream();
@@ -280,32 +293,24 @@ public class Btreceiver extends AppCompatActivity {
             connectedInputStream = in;
         }
 
-        @RequiresApi(api = Build.VERSION_CODES.S)
         @Override
         public void run() {
             byte[] buffer = new byte[1024];
-            int bytes = 0;
+            int bytes;
 
             // continuous data
             while (isConnected) {
                 try {
                     bytes = connectedInputStream.read(buffer);
 
-                    //Log.i("Data masuk : ", String.valueOf(bytes));
                     final String strReceived = new String(buffer, 0, bytes);
                     Log.v("Data masuk1 : ", strReceived);
                     data = strReceived;
-//
-
-//                    byte data = (byte) connectedInputStream.read();
 
                     runOnUiThread(() -> textStatus.append(strReceived));
 
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
-                    isConnected = false;
-//                    saveAudio("sdsdsd");
 
                     final String msgConnectionLost = "Connection lost:  "
                             + e.getMessage();
@@ -315,7 +320,6 @@ public class Btreceiver extends AppCompatActivity {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.S)
     private void saveAudio(String data) {
         if (isExtStorageWritable() && checkPermission()) {
             try {
@@ -347,7 +351,6 @@ public class Btreceiver extends AppCompatActivity {
         return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.S)
     protected boolean checkBtPermission() {
         if (checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.BLUETOOTH_CONNECT},REQUEST_PERMISSION);

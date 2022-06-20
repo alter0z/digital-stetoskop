@@ -4,6 +4,7 @@ package com.tensorflow.android.example.stetoskopdigital1;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.tensorflow.android.R;
@@ -29,6 +31,7 @@ public class MainActivity1 extends AppCompatActivity {
     public static final String TAG_USERNAME = "username";
 
 
+    @RequiresApi(api = Build.VERSION_CODES.S)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,27 +42,21 @@ public class MainActivity1 extends AppCompatActivity {
         btn_logout = (ImageButton) findViewById(R.id.btn_logout);
         ImageView imageView = (ImageView)findViewById(R.id.statusJantung);
         ImageView imageView1 = (ImageView)findViewById(R.id.rekamJantung);
-        imageView1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity1.this, Btreceiver.class);
-                finish();
-                intent.putExtra(TAG_ID, id);
-                intent.putExtra(TAG_USERNAME, username);
-                startActivity(intent);
-            }
+        imageView1.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity1.this, Btreceiver.class);
+            finish();
+            intent.putExtra(TAG_ID, id);
+            intent.putExtra(TAG_USERNAME, username);
+            startActivity(intent);
         });
         sharedpreferences = getSharedPreferences(Login.my_shared_preferences, Context.MODE_PRIVATE);
 
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity1.this, MainActivity.class);
-                finish();
-                intent.putExtra(TAG_ID, id);
-                intent.putExtra(TAG_USERNAME, username);
-                startActivity(intent);
-            }
+        imageView.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity1.this, MainActivity.class);
+            finish();
+            intent.putExtra(TAG_ID, id);
+            intent.putExtra(TAG_USERNAME, username);
+            startActivity(intent);
         });
         sharedpreferences = getSharedPreferences(Login.my_shared_preferences, Context.MODE_PRIVATE);
 
@@ -71,22 +68,18 @@ public class MainActivity1 extends AppCompatActivity {
 
 
 
-        btn_logout.setOnClickListener(new View.OnClickListener() {
+        btn_logout.setOnClickListener(v -> {
+            // TODO Auto-generated method stub
+            // update login session ke FALSE dan mengosongkan nilai id dan username
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.putBoolean(Login.session_status, false);
+            editor.putString(TAG_ID, null);
+            editor.putString(TAG_USERNAME, null);
+            editor.commit();
 
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                // update login session ke FALSE dan mengosongkan nilai id dan username
-                SharedPreferences.Editor editor = sharedpreferences.edit();
-                editor.putBoolean(Login.session_status, false);
-                editor.putString(TAG_ID, null);
-                editor.putString(TAG_USERNAME, null);
-                editor.commit();
-
-                Intent intent = new Intent(MainActivity1.this, Login.class);
-                finish();
-                startActivity(intent);
-            }
+            Intent intent = new Intent(MainActivity1.this, Login.class);
+            finish();
+            startActivity(intent);
         });
 
     }
