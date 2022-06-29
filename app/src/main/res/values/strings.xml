@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NoiseClassifier_Android_Tensorflow</string>
+    <string name="app_name">Stetoskop Digital</string>
     <string name="rekam_suara_jantung">rekam suara jantung</string>
     <string name="cek_status_jantung">cek status jantung</string>
     <string name="informasi">Informasi</string>

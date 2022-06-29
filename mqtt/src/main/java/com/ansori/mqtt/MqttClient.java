@@ -17,18 +17,18 @@ public class MqttClient {
     IMqttToken token;
 
     public MqttClient(Context context) {
-        String serverUri = "the server uri";
-        String clientID = "the client id";
+        String serverUri = "tcp://192.168.1.68:1883";
+        String clientID = org.eclipse.paho.client.mqttv3.MqttClient.generateClientId();
         String username = "an username";
         String password = "an password";
 
         client = new MqttAndroidClient(context, serverUri, clientID);
-        options = new MqttConnectOptions();
-        options.setUserName(username);
-        options.setPassword(password.toCharArray());
+//        options = new MqttConnectOptions();
+//        options.setUserName(username);
+//        options.setPassword(password.toCharArray());
 
         try {
-            token = client.connect(options);
+            token = client.connect();
             token.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
@@ -42,6 +42,7 @@ public class MqttClient {
             });
         } catch (MqttException e) {
             e.printStackTrace();
+            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 

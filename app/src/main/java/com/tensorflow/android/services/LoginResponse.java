@@ -18,7 +18,7 @@ public class LoginResponse {
 //        this.context = context;
 
         client = new OkHttpClient().newBuilder().build();
-        MediaType mediaType = MediaType.parse("text/plain");
+        MediaType mediaType = MediaType.parse("application/json");
     }
 
     public void setRequestBody(String email, String password) {
@@ -26,8 +26,8 @@ public class LoginResponse {
                 .addFormDataPart("password",password).build();
     }
 
-    public void setRequest() {
-        request = new Request.Builder().url("http://stetoskopdigital.com/api/login").method("POST",body).build();
+    public void setRequest(String email, String password) {
+        request = new Request.Builder().url("http://stetoskopdigital.com/api/login?email="+email+"&password="+password).build();
     }
 
     public Response getResponse() {

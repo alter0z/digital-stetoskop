@@ -2,12 +2,15 @@ package com.tensorflow.android.example.stetoskopdigital1;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -41,12 +45,12 @@ import java.util.UUID;
 public class Btreceiver extends AppCompatActivity {
 
     private static final int REQUEST_PERMISSION = 1;
-    private static final int INTERVAL = 10000;
+    private int INTERVAL = 10000;
     public static final String TAG_ID = "id";
     public static final String TAG_USERNAME = "username";
     BluetoothAdapter bluetoothAdapter;
     ArrayList<BluetoothDevice> pairedDeviceArrayList;
-    TextView textStatus;
+    TextView connStatus,receiveStatus,intervalStatus;
     Button refresh;
     ListView listViewPairedDevice;
     LinearLayout pane;
@@ -58,6 +62,7 @@ public class Btreceiver extends AppCompatActivity {
     private MqttClient client;
     String id, username;
     private boolean isConnected = false;
+    private Dialog popup;
 
     ArrayAdapter<String> pairedDeviceAdapter;
     private UUID myUUID;
@@ -73,22 +78,74 @@ public class Btreceiver extends AppCompatActivity {
         id = getIntent().getStringExtra(TAG_ID);
         username = getIntent().getStringExtra(TAG_USERNAME);
 
-        Toast.makeText(this, "Pair your device first before using the app", Toast.LENGTH_LONG).show();
+//        Toast.makeText(this, "Pair your device first before using the app", Toast.LENGTH_LONG).show();
 
         refresh = findViewById(R.id.refresh);
-        textStatus = findViewById(R.id.status);
+        connStatus = findViewById(R.id.connStatus);
+        receiveStatus = findViewById(R.id.recStatus);
+        intervalStatus = findViewById(R.id.interval);
         listViewPairedDevice = findViewById(R.id.pairedlist);
-        pane = findViewById(R.id.clearPane);
+//        pane = findViewById(R.id.clearPane);
         btnDisconnect = findViewById(R.id.disconnect);
+        ImageButton back = findViewById(R.id.back);
+        Button setInterval = findViewById(R.id.setint);
+
+        popup = new Dialog(this);
+
+        back.setOnClickListener(view -> {
+            if (!isConnected) {
+                Intent intent = new Intent(this, MainActivity1.class);
+                // start your next activity
+                intent.putExtra(TAG_ID,id);
+                intent.putExtra(TAG_USERNAME,username);
+                startActivity(intent);
+                finish();
+            } else {
+                Toast.makeText(this, "Disconnect first!", Toast.LENGTH_LONG).show();
+            }
+        });
+        setInterval.setOnClickListener(view -> {
+            popup.setContentView(R.layout.duration_menu);
+            popup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            Button min_1,min_5,min_10;
+            min_1 = popup.findViewById(R.id.min_1);
+            min_5 = popup.findViewById(R.id.min_5);
+            min_10 = popup.findViewById(R.id.min_10);
+            popup.show();
+
+            min_1.setOnClickListener(v -> {
+                INTERVAL = 1000*60;
+                intervalStatus.setText("Your data will be sent every 1 minute");
+                popup.dismiss();
+            });
+
+            min_5.setOnClickListener(v -> {
+                INTERVAL = 1000*(60*5);
+                intervalStatus.setText("Your data will be sent every 5 minute");
+                popup.dismiss();
+            });
+
+            min_10.setOnClickListener(v -> {
+                INTERVAL = 1000*(60*10);
+                intervalStatus.setText("Your data will be sent every 10 minute");
+                popup.dismiss();
+            });
+        });
 
         // mqtt service object
-        client = new MqttClient(this);
+//        client = new MqttClient(this);
 
-        refresh.setOnClickListener(v -> startActivity(new Intent(Btreceiver.this, Btreceiver.class)));
+        refresh.setOnClickListener(v -> {
+            startActivity(new Intent(Btreceiver.this, Btreceiver.class));
+            finish();
+        });
         btnDisconnect.setOnClickListener(v -> {
             if (myThreadConnectBTdevice != null) {
                 myThreadConnectBTdevice.cancel();
                 isConnected = false;
+                refresh.setVisibility(View.VISIBLE);
+                listViewPairedDevice.setVisibility(View.VISIBLE);
+                btnDisconnect.setVisibility(View.GONE);
             }
         });
 
@@ -140,7 +197,7 @@ public class Btreceiver extends AppCompatActivity {
                     device = pairedDeviceArrayList.get(position);
                     Toast.makeText(Btreceiver.this, "Connectiong to  " + device.getName(), Toast.LENGTH_LONG).show();
 
-                    textStatus.setText("start ThreadConnectBTdevice");
+                    connStatus.setText("Connecting to " + device.getName());
                     myThreadConnectBTdevice = new ThreadConnectBTdevice(device);
                     myThreadConnectBTdevice.start();
                 });
@@ -154,7 +211,7 @@ public class Btreceiver extends AppCompatActivity {
             handler.postDelayed(runnable,INTERVAL);
             if (isConnected) {
                 saveAudio(data);
-                client.getPublish(this,username+"_"+id,data);
+//                client.getPublish(this,username+"_"+id,data);
             }
         },INTERVAL);
         super.onResume();
@@ -220,7 +277,7 @@ public class Btreceiver extends AppCompatActivity {
             if (checkBtPermission()) {
                 try {
                     bluetoothSocket = device.createRfcommSocketToServiceRecord(myUUID);
-                    textStatus.setText("bluetoothSocket: \n" + bluetoothSocket);
+//                    textStatus.setText("bluetoothSocket: \n" + bluetoothSocket);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -237,7 +294,7 @@ public class Btreceiver extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
 
-                    runOnUiThread(() -> textStatus.setText("Could not connect to your device!"));
+                    runOnUiThread(() -> connStatus.setText("Could not connect to your device!"));
 
                     try {
                         bluetoothSocket.close();
@@ -254,11 +311,13 @@ public class Btreceiver extends AppCompatActivity {
 
                 runOnUiThread(() -> {
 
-                    textStatus.setText(connMessage);
+                    connStatus.setText(connMessage);
                     Toast.makeText(Btreceiver.this, "connection successful", Toast.LENGTH_LONG).show();
 
                     listViewPairedDevice.setVisibility(View.GONE);
-                    pane.setVisibility(View.VISIBLE);
+                    btnDisconnect.setVisibility(View.VISIBLE);
+                    refresh.setVisibility(View.GONE);
+//                    pane.setVisibility(View.VISIBLE);
                 });
 
                 startThreadConnected(bluetoothSocket);
@@ -295,7 +354,7 @@ public class Btreceiver extends AppCompatActivity {
 
         @Override
         public void run() {
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[4];
             int bytes;
 
             // continuous data
@@ -307,14 +366,16 @@ public class Btreceiver extends AppCompatActivity {
                     Log.v("Data masuk1 : ", strReceived);
                     data = strReceived;
 
-                    runOnUiThread(() -> textStatus.append(strReceived));
+                    runOnUiThread(() -> receiveStatus.setText("Receiving data ..."));
 
                 } catch (IOException e) {
                     e.printStackTrace();
 
-                    final String msgConnectionLost = "Connection lost:  "
-                            + e.getMessage();
-                    runOnUiThread(() -> textStatus.setText(msgConnectionLost));
+                    final String msgConnectionLost = "Connection lost";
+                    runOnUiThread(() -> {
+                        connStatus.setText(msgConnectionLost);
+                        receiveStatus.setText("No data Received");
+                    });
                 }
             }
         }

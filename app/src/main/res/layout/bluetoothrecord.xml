@@ -3,92 +3,257 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     tools:context=".example.stetoskopdigital1.Btreceiver">
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="@drawable/header_main">
+
+        <ImageButton
+            android:id="@+id/back"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@null"
+            android:contentDescription="@string/app_name"
+            app:srcCompat="@drawable/abc_vector_test"
+            app:tint="@color/white" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="12dp"
+            android:text="@string/kembali"
+            android:textColor="#FBFBFB"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_toEndOf="@+id/back"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:padding="10dp"
+        android:background="@drawable/card_bg">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:autoLink="web"
-            android:text="Bluetooth data receiver"
+            android:text="Note:"
+            android:textColor="@color/teal_200"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/imageView"
+        <TextView
             android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:layout_weight="1"
-            />
+            android:layout_height="wrap_content"
+            android:text="Pair your device first before using the app"
+            android:layout_marginTop="26dp"
+            android:textColor="@color/teal_200"
+            android:textSize="16sp" />
 
-        <ScrollView
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:padding="10dp"
+        android:background="@drawable/card_bg">
+
+        <TextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="2">
+            android:layout_height="wrap_content"
+            android:text="Status:"
+            android:textColor="@color/teal_200"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+        <TextView
+            android:id="@+id/connStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="26dp"
+            android:text="Device not connected"
+            android:textColor="@color/teal_200"
+            android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:padding="10dp" />
-            </LinearLayout>
-        </ScrollView>
-    </LinearLayout>
+        <TextView
+            android:id="@+id/recStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="46dp"
+            android:text="No data received"
+            android:textColor="@color/teal_200"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/interval"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="66dp"
+            android:text="Your data will be sent every 10 secon"
+            android:textColor="@color/teal_200"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/pairedlist"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+
+    </ListView>
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:layout_weight="1"
-        android:orientation="vertical">
-
+        android:layout_marginTop="20dp">
 
         <Button
             android:id="@+id/refresh"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:text="Refresh" />
-
-        <ListView
-            android:id="@+id/pairedlist"
-            android:layout_width="match_parent"
-            android:layout_marginBottom="50dp"
-            android:layout_height="300dp">
-
-        </ListView>
-
-        <LinearLayout
-            android:id="@+id/clearPane"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <Button
-                android:id="@+id/disconnect"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Disconnect"/>
-
-        </LinearLayout>
+            android:layout_weight="2"
+            android:padding="10dp"
+            android:layout_margin="5dp"
+            android:text="Refresh"
+            android:textSize="18sp"
+            android:textAllCaps="false"
+            android:textColor="#FFF"
+            android:background="@drawable/button"
+            style="?android:attr/buttonBarButtonStyle" />
 
         <Button
-            android:id="@+id/intMenu"
-            android:layout_width="match_parent"
+            android:id="@+id/disconnect"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Set Interval"/>
+            android:layout_weight="2"
+            android:padding="10dp"
+            android:layout_margin="5dp"
+            android:text="Disconect"
+            android:visibility="gone"
+            android:textSize="18sp"
+            android:textAllCaps="false"
+            android:textColor="#FFF"
+            android:background="@drawable/button"
+            style="?android:attr/buttonBarButtonStyle" />
+
+        <Button
+            android:id="@+id/setint"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:padding="10dp"
+            android:layout_margin="5dp"
+            android:text="Set Interval"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:textColor="@color/teal_200"
+            android:background="@drawable/card_bg"
+            style="?android:attr/buttonBarButtonStyle" />
 
     </LinearLayout>
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_weight="1"-->
+<!--        android:orientation="vertical">-->
+
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center_horizontal"-->
+<!--            android:autoLink="web"-->
+<!--            android:text="Bluetooth data receiver"-->
+<!--            android:textStyle="bold" />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/imageView"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="100dp"-->
+<!--            android:layout_weight="1"-->
+<!--            />-->
+
+<!--        <ScrollView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="2">-->
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical">-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/status"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:padding="10dp" />-->
+<!--            </LinearLayout>-->
+<!--        </ScrollView>-->
+<!--    </LinearLayout>-->
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_weight="1"-->
+<!--        android:orientation="vertical">-->
+
+
+<!--        <Button-->
+<!--            android:id="@+id/refresh"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:text="Refresh" />-->
+
+<!--        <ListView-->
+<!--            android:id="@+id/pairedlist"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_marginBottom="50dp"-->
+<!--            android:layout_height="300dp">-->
+
+<!--        </ListView>-->
+
+<!--        <LinearLayout-->
+<!--            android:id="@+id/clearPane"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical"-->
+<!--            android:visibility="gone">-->
+
+<!--            <Button-->
+<!--                android:id="@+id/disconnect"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Disconnect"/>-->
+
+<!--        </LinearLayout>-->
+
+<!--        <Button-->
+<!--            android:id="@+id/intMenu"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Set Interval"/>-->
+
+<!--    </LinearLayout>-->
 
 
 </LinearLayout>
