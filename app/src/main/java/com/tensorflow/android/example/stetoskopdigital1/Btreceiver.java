@@ -31,12 +31,14 @@ import androidx.core.content.ContextCompat;
 
 import com.ansori.mqtt.MqttClient;
 import com.tensorflow.android.R;
+import com.tensorflow.android.audio.features.CleanWavFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
@@ -57,12 +59,14 @@ public class Btreceiver extends AppCompatActivity {
     Button btnDisconnect;
     private BluetoothDevice device;
     String data = "samples";
+    private byte[] finalData;
     Handler handler = new Handler();
     Runnable runnable;
     private MqttClient client;
     String id, username;
     private boolean isConnected = false;
     private Dialog popup;
+    private TextView fileStatus;
 
     ArrayAdapter<String> pairedDeviceAdapter;
     private UUID myUUID;
@@ -89,6 +93,7 @@ public class Btreceiver extends AppCompatActivity {
         btnDisconnect = findViewById(R.id.disconnect);
         ImageButton back = findViewById(R.id.back);
         Button setInterval = findViewById(R.id.setint);
+        fileStatus = findViewById(R.id.writefile);
 
         popup = new Dialog(this);
 
@@ -136,8 +141,10 @@ public class Btreceiver extends AppCompatActivity {
 //        client = new MqttClient(this);
 
         refresh.setOnClickListener(v -> {
-            startActivity(new Intent(Btreceiver.this, Btreceiver.class));
-            finish();
+//            startActivity(new Intent(Btreceiver.this, Btreceiver.class));
+//            finish();
+            saveSampleWav(data);
+            saveCleanWav();
         });
         btnDisconnect.setOnClickListener(v -> {
             if (myThreadConnectBTdevice != null) {
@@ -210,7 +217,8 @@ public class Btreceiver extends AppCompatActivity {
         handler.postDelayed(runnable = () -> {
             handler.postDelayed(runnable,INTERVAL);
             if (isConnected) {
-                saveAudio(data);
+                saveSampleWav(data);
+                saveCleanWav();
 //                client.getPublish(this,username+"_"+id,data);
             }
         },INTERVAL);
@@ -354,7 +362,7 @@ public class Btreceiver extends AppCompatActivity {
 
         @Override
         public void run() {
-            byte[] buffer = new byte[4];
+            byte[] buffer = new byte[1024];
             int bytes;
 
             // continuous data
@@ -381,22 +389,75 @@ public class Btreceiver extends AppCompatActivity {
         }
     }
 
-    private void saveAudio(String data) {
+    private void saveSampleWav(String data) {
         if (isExtStorageWritable() && checkPermission()) {
             try {
                 ContextWrapper contextWrapper = new ContextWrapper(this);
-                File audioDir = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_RECORDINGS);
-                File files = new File(audioDir,System.currentTimeMillis()+".wav");
+                File audioDir = contextWrapper.getExternalFilesDir("sample wav");
+//                File files = new File(audioDir,System.currentTimeMillis()+".wav");
+                File files = new File(audioDir,"sample.wav");
                 FileOutputStream fos = new FileOutputStream(files);
                 fos.write(data.getBytes());
                 fos.close();
+                fileStatus.setText("saved to "+audioDir.getAbsolutePath());
                 Toast.makeText(Btreceiver.this, "saved to "+audioDir.getAbsolutePath(), Toast.LENGTH_LONG).show();
             } catch (Exception e) {
+                fileStatus.setText(e.toString());
                 Toast.makeText(Btreceiver.this, e.toString(), Toast.LENGTH_LONG).show();
             }
         } else {
+            fileStatus.setText("Cant write data");
             Toast.makeText(Btreceiver.this, "Cant write data", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void saveCleanWav() {
+        if (isExtStorageWritable() && checkPermission()) {
+            try{
+                ContextWrapper contextWrapper = new ContextWrapper(this);
+                File file = contextWrapper.getExternalFilesDir("sample wav");
+                String audioFileAbsolutePath = file.getAbsolutePath()+"/samples.wav";
+                System.out.println(audioFileAbsolutePath);
+                CleanWavFile audioFileProcess = new CleanWavFile();
+                float[] audioData = audioFileProcess.ReadingAudioFile(audioFileAbsolutePath);
+
+                float[] manipulatedAudioData = new float[audioData.length];
+            /*
+              Assume did some manipulation on the wav file aka over audioData array[] and got new array named manipulatedAudioData[]
+            */
+                short[] int16 =  float32ToInt16(audioData); // suppose, the new wav file's each sample will be in int16 Format
+//                short[] data = (short) audioData;
+                audioFileProcess.WriteCleanAudioWav(this,System.currentTimeMillis()+".wav", int16);
+            }
+            catch (Exception e){
+                fileStatus.setText(e.toString());
+                System.out.println("Error: "+e);
+            }
+        } else {
+            fileStatus.setText("Cant write data");
+        }
+    }
+
+    public static short[] float32ToInt16(float[] arr){  //int[]
+        // logic is built to support the numpy.int16 output
+        short[] int16Arr = new short [arr.length];
+        for(int i=0; i<arr.length; i++){
+            if(arr[i]<0) {
+                if (arr[i]>-1) {
+                    int16Arr[i] = 0;
+                }
+                else{
+                    int16Arr[i] = (short) Math.ceil((double)arr[i]);
+                }
+            }
+            else if (arr[i]>0){
+                int16Arr[i] = (short) Math.floor((double)arr[i]);
+            }
+            else{
+                int16Arr[i] = 0;
+            }
+        }
+        return int16Arr;
     }
 
     private boolean checkPermission() {
