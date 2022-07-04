@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -421,7 +422,7 @@ public class Btreceiver extends AppCompatActivity {
                 CleanWavFile audioFileProcess = new CleanWavFile();
                 float[] audioData = audioFileProcess.ReadingAudioFile(audioFileAbsolutePath);
 
-                float[] manipulatedAudioData = new float[audioData.length];
+//                float[] manipulatedAudioData = new float[audioData.length];
             /*
               Assume did some manipulation on the wav file aka over audioData array[] and got new array named manipulatedAudioData[]
             */
@@ -447,11 +448,11 @@ public class Btreceiver extends AppCompatActivity {
                     int16Arr[i] = 0;
                 }
                 else{
-                    int16Arr[i] = (short) Math.ceil((double)arr[i]);
+                    int16Arr[i] = (short) Math.ceil(arr[i]);
                 }
             }
             else if (arr[i]>0){
-                int16Arr[i] = (short) Math.floor((double)arr[i]);
+                int16Arr[i] = (short) Math.floor(arr[i]);
             }
             else{
                 int16Arr[i] = 0;

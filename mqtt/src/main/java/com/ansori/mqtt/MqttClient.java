@@ -10,17 +10,20 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Random;
 
 public class MqttClient {
     private final MqttAndroidClient client;
-    MqttConnectOptions options;
+//    MqttConnectOptions options;
     IMqttToken token;
 
     public MqttClient(Context context) {
-        String serverUri = "tcp://192.168.1.68:1883";
+        String serverUri = MqttConfig.getMqttAddress(context);
         String clientID = org.eclipse.paho.client.mqttv3.MqttClient.generateClientId();
-        String username = "an username";
-        String password = "an password";
+//        String username = "an username";
+//        String password = "an password";
+
+        Random random = new Random();
 
         client = new MqttAndroidClient(context, serverUri, clientID);
 //        options = new MqttConnectOptions();
