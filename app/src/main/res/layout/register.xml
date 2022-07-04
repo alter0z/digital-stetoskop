@@ -1,25 +1,282 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/center"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F4F4F4"
-    android:padding="16dp">
+    android:background="@color/teel_60"
+    tools:context=".example.stetoskopdigital1.Register">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="177dp"
-            android:layout_height="179dp"
+            android:id="@+id/imageView2"
+            android:layout_width="157dp"
+            android:layout_height="160dp"
             android:layout_gravity="center"
+            android:layout_margin="20dp"
+            android:paddingTop="12dp"
             app:srcCompat="@drawable/logo" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="380dp"
+            android:layout_margin="20dp"
+            app:cardBackgroundColor="#FFF"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="Register below"
+                    android:textAlignment="center"
+                    android:textColor="@color/teal_200"
+                    android:textSize="28sp" />
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:boxStrokeWidthFocused="2dp"
+                            app:boxStrokeWidth="0dp"
+                            android:background="@drawable/field"
+                            app:boxStrokeColor="@color/teal_200"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/name"
+                                android:inputType="text"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/fullname"
+                                android:padding="15dp"
+                                android:textColor="#888F96"
+                                android:textColorHint="#B4B6B8" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            app:boxStrokeWidthFocused="2dp"
+                            app:boxStrokeWidth="0dp"
+                            android:background="@drawable/field"
+                            app:boxStrokeColor="@color/teal_200"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/ktp"
+                                android:inputType="number"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/ktp"
+                                android:padding="15dp"
+                                android:textColor="#888F96"
+                                android:textColorHint="#B4B6B8" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            app:boxStrokeWidthFocused="2dp"
+                            app:boxStrokeWidth="0dp"
+                            android:background="@drawable/field"
+                            app:boxStrokeColor="@color/teal_200"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/gender"
+                                android:inputType="none"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/gender"
+                                android:padding="15dp"
+                                android:textColor="#888F96"
+                                android:textColorHint="#B4B6B8" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            app:boxStrokeWidthFocused="2dp"
+                            app:boxStrokeWidth="0dp"
+                            android:background="@drawable/field"
+                            app:boxStrokeColor="@color/teal_200"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/phone"
+                                android:inputType="number"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/phone_number"
+                                android:padding="15dp"
+                                android:textColor="#888F96"
+                                android:textColorHint="#B4B6B8" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            app:boxStrokeWidthFocused="2dp"
+                            app:boxStrokeWidth="0dp"
+                            android:background="@drawable/field"
+                            app:boxStrokeColor="@color/teal_200"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/txt_username"
+                                android:inputType="textEmailAddress"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/email"
+                                android:padding="15dp"
+                                android:textColor="#888F96"
+                                android:textColorHint="#B4B6B8" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            app:passwordToggleEnabled="true"
+                            app:boxStrokeWidthFocused="2dp"
+                            app:boxStrokeWidth="0dp"
+                            android:background="@drawable/field"
+                            app:boxStrokeColor="@color/teal_200"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/txt_password"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/password"
+                                android:inputType="textPassword"
+                                android:padding="15dp"
+                                android:textColor="#888F96"
+                                android:textColorHint="#B4B6B8"/>
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            app:passwordToggleEnabled="true"
+                            app:boxStrokeWidthFocused="2dp"
+                            app:boxStrokeWidth="0dp"
+                            android:background="@drawable/field"
+                            app:boxStrokeColor="@color/teal_200"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/confirm_password"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/confirm_password"
+                                android:inputType="textPassword"
+                                android:padding="15dp"
+                                android:textColor="#888F96"
+                                android:textColorHint="#B4B6B8"/>
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            app:boxStrokeWidthFocused="2dp"
+                            app:boxStrokeWidth="0dp"
+                            android:background="@drawable/field"
+                            app:boxStrokeColor="@color/teal_200"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/role"
+                                android:inputType="none"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/role"
+                                android:padding="15dp"
+                                android:textColor="#888F96"
+                                android:textColorHint="#B4B6B8" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn_register"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="2"
+                                android:backgroundTint="@color/teal_200"
+                                android:padding="10dp"
+                                android:text="Register"
+                                android:textAllCaps="false"
+                                android:textColor="#FFF"
+                                android:textSize="18sp" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn_login"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="2"
+                                android:backgroundTint="#FFF"
+                                android:padding="10dp"
+                                android:text="Login"
+                                android:textAllCaps="false"
+                                android:textColor="@color/teal_200"
+                                android:textSize="18sp"
+                                app:strokeColor="@color/teal_200"
+                                app:strokeWidth="2dp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </ScrollView>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
         <TextView
             android:id="@+id/TextView2"
@@ -27,71 +284,120 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="30dip"
-            android:padding="15dp"
-            android:text="REGISTER BELOW"
-            android:textSize="16dip" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/white_rectangle"
-            android:orientation="vertical"
-            android:padding="10dp"
-            android:fadingEdge="vertical">
-
-            <EditText
-                android:id="@+id/txt_username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="10dp"
-                android:hint="Username"
-                android:inputType="textEmailAddress"
-                android:singleLine="true" />
-
-            <EditText
-                android:id="@+id/txt_confirm_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="10dp"
-                android:hint="Comfirmation Password"
-                android:password="true" />
-
-            <EditText
-                android:id="@+id/txt_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="10dp"
-                android:hint="Password"
-                android:password="true"
-                android:singleLine="true" />
-        </LinearLayout>
+            android:text="Selamat Datang, Silahkan Login"
+            android:textColor="#FFF"
+            android:textSize="15dip" />
 
         <TextView
             android:id="@+id/TextView1"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:text="Stetoskop Digital"
-            android:textSize="18dip"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/btn_register"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
-            android:background="#448AFF"
-            android:text="Register"
-            android:textColor="#fff"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="Stetoskop Digital"
+            android:textColor="#FFF"
+            android:textSize="18dip"
             android:textStyle="bold" />
 
     </LinearLayout>
 
 </RelativeLayout>
+
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    android:id="@+id/center"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:background="#F4F4F4"-->
+<!--    android:padding="16dp">-->
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:layout_centerVertical="true"-->
+<!--        android:orientation="vertical">-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/imageView3"-->
+<!--            android:layout_width="177dp"-->
+<!--            android:layout_height="179dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            app:srcCompat="@drawable/logo" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/TextView2"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:layout_marginTop="30dip"-->
+<!--            android:padding="15dp"-->
+<!--            android:text="REGISTER BELOW"-->
+<!--            android:textSize="16dip" />-->
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:background="@drawable/white_rectangle"-->
+<!--            android:orientation="vertical"-->
+<!--            android:padding="10dp"-->
+<!--            android:fadingEdge="vertical">-->
+
+<!--            <EditText-->
+<!--                android:id="@+id/txt_username"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_margin="10dp"-->
+<!--                android:hint="Username"-->
+<!--                android:inputType="textEmailAddress"-->
+<!--                android:singleLine="true" />-->
+
+<!--            <EditText-->
+<!--                android:id="@+id/txt_confirm_password"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_margin="10dp"-->
+<!--                android:hint="Comfirmation Password"-->
+<!--                android:password="true" />-->
+
+<!--            <EditText-->
+<!--                android:id="@+id/txt_password"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_margin="10dp"-->
+<!--                android:hint="Password"-->
+<!--                android:password="true"-->
+<!--                android:singleLine="true" />-->
+<!--        </LinearLayout>-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/TextView1"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:layout_marginBottom="5dp"-->
+<!--            android:layout_marginTop="5dp"-->
+<!--            android:text="Stetoskop Digital"-->
+<!--            android:textSize="18dip"-->
+<!--            android:textStyle="bold" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/btn_register"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:layout_marginTop="15dp"-->
+<!--            android:layout_marginBottom="15dp"-->
+<!--            android:background="#448AFF"-->
+<!--            android:text="Register"-->
+<!--            android:textColor="#fff"-->
+<!--            android:textStyle="bold" />-->
+
+<!--    </LinearLayout>-->
+
+<!--</RelativeLayout>-->

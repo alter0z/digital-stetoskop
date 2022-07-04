@@ -196,8 +196,8 @@ public class Login extends AppCompatActivity {
 //        AppController.getInstance().addToRequestQueue(strReq, tag_json_obj);
 
         loginResponse = new LoginResponse();
-//        loginResponse.setRequestBody(email, password);
-        loginResponse.setRequest(email, password);
+        loginResponse.setRequestBody(email, password);
+        loginResponse.setRequest();
         loginResponse.getClient().newCall(loginResponse.getRequest()).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -211,34 +211,7 @@ public class Login extends AppCompatActivity {
                     String username = null;
                     String id = null;
                     String data = Objects.requireNonNull(response.body()).string();
-//                    String data = "{\n" +
-//                            "    \"meta\": [{\n" +
-//                            "        \"code\": 200,\n" +
-//                            "        \"status\": \"success\",\n" +
-//                            "        \"message\": \"Authenticated\"\n" +
-//                            "    }],\n" +
-//                            "    \"data\": [{\n" +
-//                            "        \"access_token\": \"48|8XTuxygQFtP2uMc7h074v3PrsXFsQBfGgNO9YC3N\",\n" +
-//                            "        \"token_type\": \"Bearer\",\n" +
-//                            "        \"user\": [{\n" +
-//                            "            \"id\": 10,\n" +
-//                            "            \"name\": \"Rspace\",\n" +
-//                            "            \"gender\": \"laki-laki\",\n" +
-//                            "            \"address\": \"Solo\",\n" +
-//                            "            \"email\": \"osea.dev@gmail.com\",\n" +
-//                            "            \"email_verified_at\": null,\n" +
-//                            "            \"phonenumber\": \"081212228699\",\n" +
-//                            "            \"current_team_id\": null,\n" +
-//                            "            \"profile_photo_path\": null,\n" +
-//                            "            \"created_at\": \"2022-04-05T06:14:57.000000Z\",\n" +
-//                            "            \"updated_at\": \"2022-04-06T21:34:52.000000Z\",\n" +
-//                            "            \"role_id\": 1,\n" +
-//                            "            \"sip\": null,\n" +
-//                            "            \"ktp\": null,\n" +
-//                            "            \"profile_photo_url\": \"https://ui-avatars.com/api/?name=R&color=7F9CF5&background=EBF4FF\"\n" +
-//                            "        }]\n" +
-//                            "    }]\n" +
-//                            "}";
+
                     try {
                         JSONObject object = new JSONObject(data);
                         String user = object.getJSONObject("data").getString("user");
@@ -248,25 +221,6 @@ public class Login extends AppCompatActivity {
 
                         Log.v("user",username);
                         Log.v("id",id);
-//                        JSONObject object = new JSONObject(data);
-//                        JSONArray array = object.getJSONArray("data");
-////                        String str = array.toString();
-////                        JSONObject theData = new JSONObject(str);
-////                        JSONArray jsonArray = theData.getJSONArray("user");
-//                        for (int i = 0; i < array.length(); i++) {
-//                            JSONObject jsonObject = array.getJSONObject(i);
-////                            Log.v("tag", jsonObject.getString("user"));
-//                            String stringData = jsonObject.getString("user");
-////                            JSONObject theObject = new JSONObject(stringData);
-//                            JSONArray theAray = new JSONArray(stringData);
-//                            for (int j = 0; j < theAray.length(); j++) {
-//                                JSONObject theObjects = theAray.getJSONObject(j);
-//                                username = theObjects.getString("name");
-//                                id = theObjects.getString("id");
-//                                Log.v("name", theObjects.getString("name"));
-//                                Log.v("id", theObjects.getString("id"));
-//                            }
-//                        }
 
                         // menyimpan login ke session
                         SharedPreferences.Editor editor = sharedpreferences.edit();

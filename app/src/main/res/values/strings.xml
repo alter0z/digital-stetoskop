@@ -12,4 +12,12 @@
     <string name="kembali">kembali</string>
     <string name="rekam">rekam</string>
     <string name="upload">upload</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="fullname">Fullname</string>
+    <string name="confirm_password">confirm Password</string>
+    <string name="gender">Gender</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="ktp">KTP</string>
+    <string name="role">Role</string>
 </resources>

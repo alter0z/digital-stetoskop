@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Ansori San/Documents/TEL U/Stetoskop_DIgital_Rework-master/app/src/main/res/drawable-v24/field.xml" value="0.1545" />
         <entry key="..\:/Users/Ansori San/Documents/TEL U/Stetoskop_DIgital_Rework-master/app/src/main/res/drawable/button.xml" value="0.1545" />
         <entry key="..\:/Users/Ansori San/Documents/TEL U/Stetoskop_DIgital_Rework-master/app/src/main/res/drawable/card_bg.xml" value="0.1545" />
         <entry key="..\:/Users/Ansori San/Documents/TEL U/Stetoskop_DIgital_Rework-master/app/src/main/res/drawable/popup_bg.xml" value="0.1545" />
@@ -11,10 +12,12 @@
         <entry key="..\:/Users/Ansori San/Documents/TEL U/Stetoskop_DIgital_Rework-master/app/src/main/res/layout/bluetoothrecord.xml" value="0.33" />
         <entry key="..\:/Users/Ansori San/Documents/TEL U/Stetoskop_DIgital_Rework-master/app/src/main/res/layout/btmain.xml" value="0.3385416666666667" />
         <entry key="..\:/Users/Ansori San/Documents/TEL U/Stetoskop_DIgital_Rework-master/app/src/main/res/layout/duration_menu.xml" value="0.3385416666666667" />
+        <entry key="..\:/Users/Ansori San/Documents/TEL U/Stetoskop_DIgital_Rework-master/app/src/main/res/layout/gender_item_layout.xml" value="0.3375" />
         <entry key="..\:/Users/Ansori San/Documents/TEL U/Stetoskop_DIgital_Rework-master/app/src/main/res/layout/login.xml" value="0.3385416666666667" />
         <entry key="..\:/Users/Ansori San/Documents/TEL U/Stetoskop_DIgital_Rework-master/app/src/main/res/layout/prediksi.xml" value="0.16979166666666667" />
         <entry key="..\:/Users/Ansori San/Documents/TEL U/Stetoskop_DIgital_Rework-master/app/src/main/res/layout/register.xml" value="0.3385416666666667" />
         <entry key="..\:/Users/Ansori San/Documents/TEL U/Stetoskop_DIgital_Rework-master/app/src/main/res/layout/rekamsuara.xml" value="0.3385416666666667" />
+        <entry key="..\:/Users/Ansori San/Documents/TEL U/Stetoskop_DIgital_Rework-master/app/src/main/res/layout/role_item_layout.xml" value="0.3385416666666667" />
       </map>
     </option>
   </component>
