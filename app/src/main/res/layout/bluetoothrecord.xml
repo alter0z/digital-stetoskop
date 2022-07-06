@@ -126,7 +126,7 @@
         android:layout_weight="1"
         android:layout_marginTop="20dp">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/refresh"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -137,10 +137,9 @@
             android:textSize="18sp"
             android:textAllCaps="false"
             android:textColor="#FFF"
-            android:background="@drawable/button"
-            style="?android:attr/buttonBarButtonStyle" />
+            android:backgroundTint="@color/teal_200" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/disconnect"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -152,10 +151,9 @@
             android:textSize="18sp"
             android:textAllCaps="false"
             android:textColor="#FFF"
-            android:background="@drawable/button"
-            style="?android:attr/buttonBarButtonStyle" />
+            android:backgroundTint="@color/teal_200" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/setint"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -163,24 +161,25 @@
             android:padding="10dp"
             android:layout_margin="5dp"
             android:text="Set Interval"
+            android:backgroundTint="#FFF"
             android:textAllCaps="false"
             android:textSize="18sp"
             android:textColor="@color/teal_200"
-            android:background="@drawable/card_bg"
-            style="?android:attr/buttonBarButtonStyle" />
+            app:strokeColor="@color/teal_200"
+            app:strokeWidth="2dp" />
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/writefile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:text="file status"
-        android:textAlignment="center"
-        android:textColor="@color/teal_200"
-        android:textSize="16sp" />
+<!--    <TextView-->
+<!--        android:id="@+id/writefile"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:layout_marginBottom="10dp"-->
+<!--        android:text="file status"-->
+<!--        android:textAlignment="center"-->
+<!--        android:textColor="@color/teal_200"-->
+<!--        android:textSize="16sp" />-->
 
 <!--    <LinearLayout-->
 <!--        android:layout_width="0dp"-->

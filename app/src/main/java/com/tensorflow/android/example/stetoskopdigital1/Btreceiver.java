@@ -67,7 +67,7 @@ public class Btreceiver extends AppCompatActivity {
     String id, username;
     private boolean isConnected = false;
     private Dialog popup;
-    private TextView fileStatus;
+//    private TextView fileStatus;
 
     ArrayAdapter<String> pairedDeviceAdapter;
     private UUID myUUID;
@@ -94,7 +94,7 @@ public class Btreceiver extends AppCompatActivity {
         btnDisconnect = findViewById(R.id.disconnect);
         ImageButton back = findViewById(R.id.back);
         Button setInterval = findViewById(R.id.setint);
-        fileStatus = findViewById(R.id.writefile);
+//        fileStatus = findViewById(R.id.writefile);
 
         popup = new Dialog(this);
 
@@ -142,10 +142,10 @@ public class Btreceiver extends AppCompatActivity {
 //        client = new MqttClient(this);
 
         refresh.setOnClickListener(v -> {
-//            startActivity(new Intent(Btreceiver.this, Btreceiver.class));
-//            finish();
-            saveSampleWav(data);
-            saveCleanWav();
+            startActivity(new Intent(Btreceiver.this, Btreceiver.class));
+            finish();
+//            saveSampleWav(data);
+//            saveCleanWav();
         });
         btnDisconnect.setOnClickListener(v -> {
             if (myThreadConnectBTdevice != null) {
@@ -400,14 +400,14 @@ public class Btreceiver extends AppCompatActivity {
                 FileOutputStream fos = new FileOutputStream(files);
                 fos.write(data.getBytes());
                 fos.close();
-                fileStatus.setText("saved to "+audioDir.getAbsolutePath());
+//                fileStatus.setText("saved to "+audioDir.getAbsolutePath());
                 Toast.makeText(Btreceiver.this, "saved to "+audioDir.getAbsolutePath(), Toast.LENGTH_LONG).show();
             } catch (Exception e) {
-                fileStatus.setText(e.toString());
+//                fileStatus.setText(e.toString());
                 Toast.makeText(Btreceiver.this, e.toString(), Toast.LENGTH_LONG).show();
             }
         } else {
-            fileStatus.setText("Cant write data");
+//            fileStatus.setText("Cant write data");
             Toast.makeText(Btreceiver.this, "Cant write data", Toast.LENGTH_LONG).show();
         }
     }
@@ -417,7 +417,7 @@ public class Btreceiver extends AppCompatActivity {
             try{
                 ContextWrapper contextWrapper = new ContextWrapper(this);
                 File file = contextWrapper.getExternalFilesDir("sample wav");
-                String audioFileAbsolutePath = file.getAbsolutePath()+"/samples.wav";
+                String audioFileAbsolutePath = file.getAbsolutePath()+"/sample.wav";
                 System.out.println(audioFileAbsolutePath);
                 CleanWavFile audioFileProcess = new CleanWavFile();
                 float[] audioData = audioFileProcess.ReadingAudioFile(audioFileAbsolutePath);
@@ -431,11 +431,12 @@ public class Btreceiver extends AppCompatActivity {
                 audioFileProcess.WriteCleanAudioWav(this,System.currentTimeMillis()+".wav", int16);
             }
             catch (Exception e){
-                fileStatus.setText(e.toString());
+//                fileStatus.setText(e.toString());
                 System.out.println("Error: "+e);
             }
         } else {
-            fileStatus.setText("Cant write data");
+//            fileStatus.setText("Cant write data");
+            Toast.makeText(Btreceiver.this, "Cant write data", Toast.LENGTH_LONG).show();
         }
     }
 
