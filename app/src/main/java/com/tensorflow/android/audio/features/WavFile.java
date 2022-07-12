@@ -1,5 +1,7 @@
 package com.tensorflow.android.audio.features;
 
+import android.util.Log;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -105,6 +107,9 @@ public class WavFile {
             throw new WavFileException("Header chunk size (" + chunkSize + ") does not match file size (" + file.length() + ")");
         }
 
+        Log.v("chunkSize: ", String.valueOf(chunkSize));
+        Log.v("fileSize: ", String.valueOf(file.length()));
+
         wavFile.fileSize = chunkSize;
 
         boolean foundFormat = false;
@@ -120,6 +125,7 @@ public class WavFile {
             // Extract the chunk ID and Size
             long chunkID = getLE(wavFile.buffer, 0, 4);
             chunkSize = getLE(wavFile.buffer, 4, 4);
+            Log.v("chunkSize: ", String.valueOf(chunkSize));
 
             // Word align the chunk size
             // chunkSize specifies the number of bytes holding data. However,
@@ -171,8 +177,11 @@ public class WavFile {
                 // Check that the chunkSize (wav data length) is a multiple of the
                 // block align (bytes per frame)
                 if (chunkSize % wavFile.blockAlign != 0)
-                    throw new WavFileException("Data Chunk size is not multiple of Block Align");
+//                    throw new WavFileException("Data Chunk size ("+chunkSize+") is not multiple of Block Align");
+                    chunkSize -= 2;
 
+                Log.v("chunkSize: ", String.valueOf(chunkSize));
+                Log.v("blockAlign: ", String.valueOf(wavFile.blockAlign));
                 // Calculate the number of frames
                 wavFile.numFrames = chunkSize / wavFile.blockAlign;
 

@@ -15,6 +15,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
@@ -27,7 +28,7 @@ public class CleanWavFile {
     int chunkSize, subChunk1Size, sampleRate, byteRate, subChunk2Size=1, bytePerSample;
     short audioFomart, numChannels, blockAlign, bitsPerSample=8;
     String chunkID, format, subChunk1ID, subChunk2ID;
-
+    int mChunkSize;
     public ByteBuffer ByteArrayToNumber(byte[] bytes, int numOfBytes, int type){
         ByteBuffer buffer = ByteBuffer.allocate(numOfBytes);
         if (type == 0){
@@ -90,6 +91,8 @@ public class CleanWavFile {
                 }
                 if (i == 12) {subChunk2Size = byteBuffer.getInt();System.out.println(subChunk2Size);}
             }
+            byte[] rawData = new byte[(int) file.length()];
+            mChunkSize = rawData.length;
             bytePerSample = bitsPerSample/8;
             float value;
             ArrayList<Float> dataVector = new ArrayList<>();
@@ -135,58 +138,25 @@ public class CleanWavFile {
         return bytes;
     }
 
-//    public void checkExternalMedia(){
-//        boolean mExternalStorageAvailable = false;
-//        boolean mExternalStorageWriteable = false;
-//        String state = Environment.getExternalStorageState();
-//
-//        if (Environment.MEDIA_MOUNTED.equals(state)) {
-//            // Can read and write the media
-//            mExternalStorageAvailable = mExternalStorageWriteable = true;
-//        } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-//            // Can only read the media
-//            mExternalStorageAvailable = true;
-//            mExternalStorageWriteable = false;
-//        } else {
-//            // Can't read or write
-//            mExternalStorageAvailable = mExternalStorageWriteable = false;
-//        }
-//        System.out.println("\n\nExternal Media: readable="
-//                +mExternalStorageAvailable+" writable="+mExternalStorageWriteable);
-//    }
+    private static int readLEint(InputStream fis) throws IOException {
+        byte[] buf = new byte[4];
+        int bytesread = fis.read(buf, 0, 4);
+        if (bytesread != 4) throw new IOException();
+        return ( ((buf[3] & 0xff) << 24) |
+                ((buf[2] & 0xff) << 16) |
+                ((buf[1] & 0xff) <<  8) |
+                ((buf[0] & 0xff)      ) );
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.S)
     public void WriteCleanAudioWav(Context context, String newFileName, short[] wavData) {
-//        File dir = null;
-//        try{
-//            checkExternalMedia();
-//            File root = android.os.Environment.getExternalStorageDirectory();
-////            System.out.println("\nExternal file system root: "+root);
-//            dir = new File (root.getAbsolutePath() + "/clean_speech");
-//            if (dir.exists() == false){
-//                dir.mkdirs();
-//                System.out.println("Directory created");
-//                System.out.println(dir);
-//            }
-//            else{
-//                System.out.println("Directory exists");
-//                System.out.println(dir);
-//            }
-//        }
-//        catch (Exception e){
-//            System.out.println("Error "+e);
-//        }
         try {
             ContextWrapper contextWrapper = new ContextWrapper(context);
             File audioDir = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_RECORDINGS);
             File files = new File(audioDir,newFileName);
-//            File file = new File(dir, "clean_20_sec.wav");
-//            if (file.exists()) {
-//                System.out.println("YES file exists");
-//            }
-            //System.out.println(file);
+
             OutputStream os;
-            //System.out.println(newFileName);
+
             os = new FileOutputStream(files);
             BufferedOutputStream bos = new BufferedOutputStream(os);
             DataOutputStream outFile = new DataOutputStream(bos);
@@ -201,13 +171,15 @@ public class CleanWavFile {
                 int myBlockAlign = (int) (myChannels * myBitsPerSample/8);
                 System.out.println("Ei porjonto completed");
                 byte[] clipData = NumericalArray2ByteArray(wavData);
+                byte[] rawData = new byte[clipData.length];
                 System.out.println("Ei porjonto completed 1");
                 long myDataSize = clipData.length;
                 long myChunk2Size =  myDataSize * myChannels * myBitsPerSample/8;
                 long myChunkSize = 36 + myChunk2Size;
+                long fileSize = 36+rawData.length;
 
                 outFile.writeBytes("RIFF");  // 00 - RIFF
-                outFile.writeInt(Integer.reverseBytes((int)myChunkSize)); // 04 - how big is the rest of this file?
+                outFile.writeInt(Integer.reverseBytes((int)fileSize)); // 04 - how big is the rest of this file?
                 outFile.writeBytes("WAVE");                                 // 08 - WAVE
                 outFile.writeBytes("fmt ");                                 // 12 - fmt
                 outFile.writeInt(Integer.reverseBytes((int)mySubChunk1Size));  // 16 - size of this chunk
@@ -239,10 +211,10 @@ public class CleanWavFile {
 //                header[1] = 'I';
 //                header[2] = 'F';
 //                header[3] = 'F';
-//                header[4] = (byte) (myDataSize & 0xff);
-//                header[5] = (byte) ((myDataSize >> 8) & 0xff);
-//                header[6] = (byte) ((myDataSize >> 16) & 0xff);
-//                header[7] = (byte) ((myDataSize >> 24) & 0xff);
+//                header[4] = (byte) (fileSize & 0xff);
+//                header[5] = (byte) ((fileSize >> 8) & 0xff);
+//                header[6] = (byte) ((fileSize >> 16) & 0xff);
+//                header[7] = (byte) ((fileSize >> 24) & 0xff);
 //                header[8] = 'W';
 //                header[9] = 'A';
 //                header[10] = 'V';
@@ -263,10 +235,10 @@ public class CleanWavFile {
 //                header[25] = (byte) ((mySampleRate >> 8) & 0xff);
 //                header[26] = (byte) ((mySampleRate >> 16) & 0xff);
 //                header[27] = (byte) ((mySampleRate >> 24) & 0xff);
-//                header[28] = (byte) (byteRate & 0xff);
-//                header[29] = (byte) ((byteRate >> 8) & 0xff);
-//                header[30] = (byte) ((byteRate >> 16) & 0xff);
-//                header[31] = (byte) ((byteRate >> 24) & 0xff);
+//                header[28] = (byte) (myByteRate & 0xff);
+//                header[29] = (byte) ((myByteRate >> 8) & 0xff);
+//                header[30] = (byte) ((myByteRate >> 16) & 0xff);
+//                header[31] = (byte) ((myByteRate >> 24) & 0xff);
 //                header[32] = (byte) (2 * 16 / 8);  // block align
 //                header[33] = 0;
 //                header[34] = (byte) myBitsPerSample;  // bits per sample

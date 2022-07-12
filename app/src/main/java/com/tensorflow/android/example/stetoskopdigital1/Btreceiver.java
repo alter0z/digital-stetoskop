@@ -417,7 +417,7 @@ public class Btreceiver extends AppCompatActivity {
             try{
                 ContextWrapper contextWrapper = new ContextWrapper(this);
                 File file = contextWrapper.getExternalFilesDir("sample wav");
-                String audioFileAbsolutePath = file.getAbsolutePath()+"/sample.wav";
+                String audioFileAbsolutePath = file.getAbsolutePath()+"/samples2.wav";
                 System.out.println(audioFileAbsolutePath);
                 CleanWavFile audioFileProcess = new CleanWavFile();
                 float[] audioData = audioFileProcess.ReadingAudioFile(audioFileAbsolutePath);

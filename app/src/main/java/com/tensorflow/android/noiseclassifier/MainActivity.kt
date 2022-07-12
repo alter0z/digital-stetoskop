@@ -177,13 +177,11 @@ class MainActivity : AppCompatActivity() {
         } catch (e: WavFileException) {
             e.printStackTrace()
         }
-        Log.d("Mfcc :", meanMFCCValues.contentToString())
+        Log.v("Mfcc :", meanMFCCValues.contentToString())
         predictedResult = loadModelAndMakePredictions(meanMFCCValues)
 
         return predictedResult
         Log.d("Predicted result", predictedResult!!)
-
-
     }
 
 
