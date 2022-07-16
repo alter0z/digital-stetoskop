@@ -113,27 +113,27 @@ public class Btreceiver extends AppCompatActivity {
         setInterval.setOnClickListener(view -> {
             popup.setContentView(R.layout.duration_menu);
             popup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            Button min_1,min_5,min_10;
-            min_1 = popup.findViewById(R.id.min_1);
-            min_5 = popup.findViewById(R.id.min_5);
-            min_10 = popup.findViewById(R.id.min_10);
+            Button sec_5,sec_10,sec_15;
+            sec_5 = popup.findViewById(R.id.sec_5);
+            sec_10 = popup.findViewById(R.id.sec_10);
+            sec_15 = popup.findViewById(R.id.sec_15);
             popup.show();
 
-            min_1.setOnClickListener(v -> {
+            sec_5.setOnClickListener(v -> {
                 INTERVAL = 1000*60;
-                intervalStatus.setText("Your data will be sent every 1 minute");
+                intervalStatus.setText("Your data will be sent every 5 secon");
                 popup.dismiss();
             });
 
-            min_5.setOnClickListener(v -> {
+            sec_10.setOnClickListener(v -> {
                 INTERVAL = 1000*(60*5);
-                intervalStatus.setText("Your data will be sent every 5 minute");
+                intervalStatus.setText("Your data will be sent every 10 secon");
                 popup.dismiss();
             });
 
-            min_10.setOnClickListener(v -> {
+            sec_15.setOnClickListener(v -> {
                 INTERVAL = 1000*(60*10);
-                intervalStatus.setText("Your data will be sent every 10 minute");
+                intervalStatus.setText("Your data will be sent every 15 secon");
                 popup.dismiss();
             });
         });
