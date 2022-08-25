@@ -21,8 +21,8 @@ public class MqttConfig {
 
     public static String getMqttAddress(Context context) {
         SharedPreferences pref = context.getSharedPreferences(MQTT_ADDRESS, Context.MODE_PRIVATE);
-        String ip = pref.getString("mqttserver", "telemedicine.co.id");
-        String port = pref.getString("port", "49877");
+        String ip = pref.getString("mqttserver", "103.161.184.235");
+        String port = pref.getString("port", "1883"); // 49877
         if (ip.equals(""))
             ip = context.getString(R.string.server_ip_address);
         if (port.equals(""))

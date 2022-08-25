@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -30,16 +29,15 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.ansori.mqtt.MqttClient;
 import com.tensorflow.android.R;
 import com.tensorflow.android.audio.features.CleanWavFile;
+import com.tensorflow.android.services.MqttClient;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
@@ -48,7 +46,7 @@ import java.util.UUID;
 public class Btreceiver extends AppCompatActivity {
 
     private static final int REQUEST_PERMISSION = 1;
-    private int INTERVAL = 10000;
+    private int INTERVAL = 5000;
     public static final String TAG_ID = "id";
     public static final String TAG_USERNAME = "username";
     BluetoothAdapter bluetoothAdapter;
@@ -101,7 +99,6 @@ public class Btreceiver extends AppCompatActivity {
         back.setOnClickListener(view -> {
             if (!isConnected) {
                 Intent intent = new Intent(this, MainActivity1.class);
-                // start your next activity
                 intent.putExtra(TAG_ID,id);
                 intent.putExtra(TAG_USERNAME,username);
                 startActivity(intent);
@@ -120,19 +117,19 @@ public class Btreceiver extends AppCompatActivity {
             popup.show();
 
             sec_5.setOnClickListener(v -> {
-                INTERVAL = 1000*60;
+                INTERVAL = 1000*5;
                 intervalStatus.setText("Your data will be sent every 5 secon");
                 popup.dismiss();
             });
 
             sec_10.setOnClickListener(v -> {
-                INTERVAL = 1000*(60*5);
+                INTERVAL = 1000*10;
                 intervalStatus.setText("Your data will be sent every 10 secon");
                 popup.dismiss();
             });
 
             sec_15.setOnClickListener(v -> {
-                INTERVAL = 1000*(60*10);
+                INTERVAL = 1000*15;
                 intervalStatus.setText("Your data will be sent every 15 secon");
                 popup.dismiss();
             });
@@ -142,11 +139,13 @@ public class Btreceiver extends AppCompatActivity {
 //        client = new MqttClient(this);
 
         refresh.setOnClickListener(v -> {
-            startActivity(new Intent(Btreceiver.this, Btreceiver.class));
-            finish();
+//            startActivity(new Intent(Btreceiver.this, Btreceiver.class));
+//            finish();
 //            saveSampleWav(data);
 //            saveCleanWav();
+            client = new MqttClient(this);
         });
+
         btnDisconnect.setOnClickListener(v -> {
             if (myThreadConnectBTdevice != null) {
                 myThreadConnectBTdevice.cancel();
@@ -417,7 +416,7 @@ public class Btreceiver extends AppCompatActivity {
             try{
                 ContextWrapper contextWrapper = new ContextWrapper(this);
                 File file = contextWrapper.getExternalFilesDir("sample wav");
-                String audioFileAbsolutePath = file.getAbsolutePath()+"/samples2.wav";
+                String audioFileAbsolutePath = file.getAbsolutePath()+"/sample.wav";
                 System.out.println(audioFileAbsolutePath);
                 CleanWavFile audioFileProcess = new CleanWavFile();
                 float[] audioData = audioFileProcess.ReadingAudioFile(audioFileAbsolutePath);

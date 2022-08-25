@@ -85,8 +85,7 @@ class MainActivity : AppCompatActivity() {
                 val audioFilePath = "$audioDirPath/$selFilePath";
                 if (!TextUtils.isEmpty(selFilePath)) {
                     try {
-                        val result = "Predicted Noise : ${classifyNoise(audioFilePath)}"
-                        result_text.text = result
+                        result_text.text = classifyNoise(audioFilePath)
                     } catch (e: IllegalArgumentException) {
                         Toast.makeText(this@MainActivity, e.toString(), Toast.LENGTH_LONG).show();
                     }
@@ -94,6 +93,7 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this@MainActivity, "Please enter a message.", Toast.LENGTH_LONG).show();
                 }
             } catch (e: NullPointerException) {
+                result_text.text = "Please choose the wav file!"
                 Toast.makeText(this@MainActivity, "Spinner still null", Toast.LENGTH_LONG).show();
             }
         }

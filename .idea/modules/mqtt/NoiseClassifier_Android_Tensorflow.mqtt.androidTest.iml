@@ -34,8 +34,6 @@
     <orderEntry type="jdk" jdkName="Android API 32 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="NoiseClassifier_Android_Tensorflow.mqtt.main" scope="TEST" />
-    <orderEntry type="library" scope="TEST" name="Gradle: org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: org.eclipse.paho:org.eclipse.paho.android.service:1.1.1" level="project" />
   </component>
   <component name="TestModuleProperties" production-module="NoiseClassifier_Android_Tensorflow.mqtt.main" />
 </module>

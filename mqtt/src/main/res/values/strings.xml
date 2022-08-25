@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="server_ip_address" formatted="true">45.77.37.238</string>
+    <string name="server_ip_address" formatted="true">103.161.184.235</string>
 <!--    <string name="http_url" formatted="true">http://telemedicine.co.id/</string>-->
-    <string name="server_http_port" formatted="true">49877</string>
+    <string name="server_http_port" formatted="true">1883</string>
 </resources>
