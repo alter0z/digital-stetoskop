@@ -1,8 +1,8 @@
 Android app that classify heart valve disease with digital stethoscope device
 
-#WAV File Documentation
+# WAV File Documentation
 berikut adalah dokumnetasi untuk membuat clean WAV file.
-##Structur WAV
+## Structur WAV
 Order  | Offset | Name | Size (bytes) | Data Type | Expected value
 ------------ | ------------- | --------- | --------------- | ----------------| --------
 big | 0 | ChunkID | 4 | String |  "RIFF"
