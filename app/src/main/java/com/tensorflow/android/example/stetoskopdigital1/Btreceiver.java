@@ -139,11 +139,11 @@ public class Btreceiver extends AppCompatActivity {
 //        client = new MqttClient(this);
 
         refresh.setOnClickListener(v -> {
-//            startActivity(new Intent(Btreceiver.this, Btreceiver.class));
-//            finish();
+            startActivity(new Intent(Btreceiver.this, Btreceiver.class));
+            finish();
 //            saveSampleWav(data);
 //            saveCleanWav();
-            client = new MqttClient(this);
+//            client = new MqttClient(this);
         });
 
         btnDisconnect.setOnClickListener(v -> {
