@@ -375,6 +375,7 @@ public class Btreceiver extends AppCompatActivity {
 
             // continuous data
             while (isConnected) {
+                isContinuesData = true;
                 try {
                     bytes = connectedInputStream.read(buffer);
 
@@ -401,6 +402,8 @@ public class Btreceiver extends AppCompatActivity {
                         connStatus.setText(msgConnectionLost);
                         receiveStatus.setText("No data Received");
                     });
+
+                    isContinuesData = false;
                 }
             }
         }
