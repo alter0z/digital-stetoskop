@@ -378,7 +378,7 @@ public class Btreceiver extends AppCompatActivity {
             int bytes;
 
             // continuous data
-            while (isConnected) {
+            if (isConnected) {
                 isContinuesData = true;
                 try {
                     bytes = connectedInputStream.read(buffer);
@@ -442,7 +442,7 @@ public class Btreceiver extends AppCompatActivity {
             */
                 short[] int16 =  float32ToInt16(audioData); // suppose, the new wav file's each sample will be in int16 Format
 //                short[] data = (short) audioData;
-                audioFileProcess.WriteCleanAudioWav(this,"System.currentTimeMillis()"+".wav", int16);
+                audioFileProcess.WriteCleanAudioWav(this,System.currentTimeMillis()+".wav", int16);
             }
             catch (Exception e){
 //                fileStatus.setText(e.toString());
