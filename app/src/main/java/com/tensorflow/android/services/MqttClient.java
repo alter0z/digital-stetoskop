@@ -78,9 +78,9 @@ public class MqttClient {
     }
 
     public void getPublish(String topic, String message) {
-        byte[] encodedPlayload;
-        encodedPlayload = message.getBytes(StandardCharsets.UTF_8);
-        MqttMessage theMessage = new MqttMessage(encodedPlayload);
-        client.publish(topic,theMessage);
+//        byte[] encodedPlayload;
+//        encodedPlayload = message.getBytes(StandardCharsets.UTF_8);
+//        MqttMessage theMessage = new MqttMessage(encodedPlayload);
+        client.publish(topic,message.getBytes(StandardCharsets.UTF_8),0,false);
     }
 }
