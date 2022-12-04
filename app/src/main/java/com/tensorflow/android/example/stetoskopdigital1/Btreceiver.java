@@ -150,10 +150,10 @@ public class Btreceiver extends AppCompatActivity {
 //        client = new MqttClient(this);
 
         refresh.setOnClickListener(v -> {
-            startActivity(new Intent(Btreceiver.this, Btreceiver.class));
-            finish();
+//            startActivity(new Intent(Btreceiver.this, Btreceiver.class));
+//            finish();
 //            saveSampleWav(data);
-//            saveCleanWav();
+            saveCleanWav();
 //            client.getPublish("php-mqtt/client/test/pasien/"+username+"_"+id,"test");
         });
 
@@ -227,7 +227,7 @@ public class Btreceiver extends AppCompatActivity {
     protected void onResume() {
         handler.postDelayed(runnable = () -> {
             handler.postDelayed(runnable,INTERVAL);
-            if (isConnected && isContinuesData) {
+            if (isConnected) {
 //                client.getPublish("php-mqtt/client/test/pasien",data);
 //                saveSampleWav(data);
                 saveCleanWav();
