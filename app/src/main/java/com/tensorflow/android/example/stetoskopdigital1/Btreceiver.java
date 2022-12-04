@@ -375,17 +375,22 @@ public class Btreceiver extends AppCompatActivity {
         public void run() {
             byte[] buffer = new byte[1024];
             int bytes;
+            StringBuilder sb = new StringBuilder();
 
             // continuous data
-            while (isConnected) {
-                isContinuesData = true;
+//            while (isConnected) {
+//                isContinuesData = true;
                 try {
                     bytes = connectedInputStream.read(buffer);
 //                    data = new String(buffer, 0, bytes);
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(new String(buffer, 0, bytes));
-                    data = sb.toString();
-                    Log.v("Data masuk : ", sb.toString());
+                    while (isConnected) {
+                        isContinuesData = true;
+                        sb.append(new String(buffer, 0, bytes));
+                    }
+//                    StringBuilder sb = new StringBuilder();
+//                    sb.append(new String(buffer, 0, bytes));
+//                    data = sb.toString();
+//                    Log.v("Data masuk : ", sb.toString());
 
                     runOnUiThread(() -> receiveStatus.setText("Receiving data ..."));
 
@@ -400,7 +405,10 @@ public class Btreceiver extends AppCompatActivity {
 
                     isContinuesData = false;
                 }
-            }
+//            }
+
+            data = sb.toString();
+            Log.v("Data masuk : ", sb.toString());
         }
     }
 
