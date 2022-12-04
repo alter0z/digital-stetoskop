@@ -66,6 +66,7 @@ public class Btreceiver extends AppCompatActivity {
     private MqttClient client;
     String id, username;
     private boolean isConnected = false;
+    private boolean isContinuesData = false;
     private Dialog popup;
 //    private TextView fileStatus;
     public static final String my_shared_preferences = "my_shared_preferences";
@@ -218,24 +219,25 @@ public class Btreceiver extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    protected void onResume() {
-//        handler.postDelayed(runnable = () -> {
-//            handler.postDelayed(runnable,INTERVAL);
-//            if (isConnected) {
+    @Override
+    protected void onResume() {
+        handler.postDelayed(runnable = () -> {
+            handler.postDelayed(runnable,INTERVAL);
+            if (isConnected && isContinuesData) {
 //                client.getPublish("php-mqtt/client/test/pasien",data);
 //                saveSampleWav(data);
 //                saveCleanWav();
-//            }
-//        },INTERVAL);
-//        super.onResume();
-//    }
+                System.out.println(data);
+            }
+        },INTERVAL);
+        super.onResume();
+    }
 
-//    @Override
-//    protected void onPause() {
-//        handler.removeCallbacks(runnable);
-//        super.onPause();
-//    }
+    @Override
+    protected void onPause() {
+        handler.removeCallbacks(runnable);
+        super.onPause();
+    }
 
     private ArrayList<String> f(ArrayList<BluetoothDevice> pairedDeviceArrayList) {
         ArrayList<String> list = new ArrayList<>();
@@ -382,14 +384,14 @@ public class Btreceiver extends AppCompatActivity {
 
                     runOnUiThread(() -> receiveStatus.setText("Receiving data ..."));
 
-                    handler.postDelayed(runnable = () -> {
-                        handler.postDelayed(runnable,INTERVAL);
-                        if (isConnected) {
-                            client.getPublish("php-mqtt/client/test/pasien",strReceived);
-                            saveSampleWav(strReceived);
-                            saveCleanWav();
-                        }
-                    },INTERVAL);
+//                    handler.postDelayed(runnable = () -> {
+//                        handler.postDelayed(runnable,INTERVAL);
+//                        if (isConnected) {
+//                            client.getPublish("php-mqtt/client/test/pasien",strReceived);
+//                            saveSampleWav(strReceived);
+//                            saveCleanWav();
+//                        }
+//                    },INTERVAL);
 
                 } catch (IOException e) {
                     e.printStackTrace();
