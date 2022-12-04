@@ -363,7 +363,7 @@ public class Btreceiver extends AppCompatActivity {
             try {
                 in = socket.getInputStream();
                 out = socket.getOutputStream();
-                out.write(1024);
+                out.write(4);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -373,7 +373,7 @@ public class Btreceiver extends AppCompatActivity {
 
         @Override
         public void run() {
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[4];
             int bytes;
 
             // continuous data
