@@ -229,9 +229,9 @@ public class Btreceiver extends AppCompatActivity {
         handler.postDelayed(runnable = () -> {
             handler.postDelayed(runnable,INTERVAL);
             if (isConnected && isContinuesData) {
-//                client.getPublish("php-mqtt/client/test/pasien",data);
-//                saveSampleWav(data);
-//                saveCleanWav();
+                client.getPublish("php-mqtt/client/test/pasien",data);
+                saveSampleWav(data);
+                saveCleanWav();
 //                System.out.println(data);
             }
         },INTERVAL);
@@ -375,16 +375,16 @@ public class Btreceiver extends AppCompatActivity {
 
         @Override
         public void run() {
-//            byte[] buffer = new byte[1024];
-//            int bytes;
+            byte[] buffer = new byte[8192];
+            int bytes;
 
             // continuous data
             while (isConnected) {
                 isContinuesData = true;
                 try {
-//                    bytes = connectedInputStream.read(buffer);
-//                    data = new String(buffer, 0, bytes);
-                    data = convertInputStreamToString(connectedInputStream);
+                    bytes = connectedInputStream.read(buffer);
+                    data = new String(buffer, 0, bytes);
+//                    data = convertInputStreamToString(connectedInputStream);
 
                     Log.v("Data masuk : ", data);
 
