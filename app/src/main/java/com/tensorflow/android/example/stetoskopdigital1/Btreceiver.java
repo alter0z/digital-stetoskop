@@ -43,7 +43,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @RequiresApi(api = Build.VERSION_CODES.S)
 public class Btreceiver extends AppCompatActivity {
@@ -219,24 +218,24 @@ public class Btreceiver extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onResume() {
-        handler.postDelayed(runnable = () -> {
-            handler.postDelayed(runnable,INTERVAL);
-            if (isConnected) {
-                client.getPublish("php-mqtt/client/test/pasien/"+username+"_"+id,data);
-                saveSampleWav(data);
-                saveCleanWav();
-            }
-        },INTERVAL);
-        super.onResume();
-    }
+//    @Override
+//    protected void onResume() {
+//        handler.postDelayed(runnable = () -> {
+//            handler.postDelayed(runnable,INTERVAL);
+//            if (isConnected) {
+//                client.getPublish("php-mqtt/client/test/pasien",data);
+//                saveSampleWav(data);
+//                saveCleanWav();
+//            }
+//        },INTERVAL);
+//        super.onResume();
+//    }
 
-    @Override
-    protected void onPause() {
-        handler.removeCallbacks(runnable);
-        super.onPause();
-    }
+//    @Override
+//    protected void onPause() {
+//        handler.removeCallbacks(runnable);
+//        super.onPause();
+//    }
 
     private ArrayList<String> f(ArrayList<BluetoothDevice> pairedDeviceArrayList) {
         ArrayList<String> list = new ArrayList<>();
@@ -370,36 +369,38 @@ public class Btreceiver extends AppCompatActivity {
         @Override
         public void run() {
             byte[] buffer = new byte[1024];
-            AtomicInteger bytes = new AtomicInteger();
+            int bytes;
 
-            handler.postDelayed(runnable = () -> {
-                handler.postDelayed(runnable,INTERVAL);
-                // continuous data
-                while (isConnected) {
-                    try {
-                        bytes.set(connectedInputStream.read(buffer));
+            // continuous data
+            while (isConnected) {
+                try {
+                    bytes = connectedInputStream.read(buffer);
 
-                        final String strReceived = new String(buffer, 0, bytes.get());
-                        Log.v("Data masuk1 : ", strReceived);
-                        data = strReceived;
+                    final String strReceived = new String(buffer, 0, bytes);
+                    Log.v("Data masuk1 : ", strReceived);
+                    data = strReceived;
 
-                        client.getPublish("php-mqtt/client/test/pasien",strReceived);
-                        saveSampleWav(strReceived);
-                        saveCleanWav();
+                    runOnUiThread(() -> receiveStatus.setText("Receiving data ..."));
 
-                        runOnUiThread(() -> receiveStatus.setText("Receiving data ..."));
+                    handler.postDelayed(runnable = () -> {
+                        handler.postDelayed(runnable,INTERVAL);
+                        if (isConnected) {
+                            client.getPublish("php-mqtt/client/test/pasien",strReceived);
+                            saveSampleWav(strReceived);
+                            saveCleanWav();
+                        }
+                    },INTERVAL);
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
 
-                        final String msgConnectionLost = "Connection lost";
-                        runOnUiThread(() -> {
-                            connStatus.setText(msgConnectionLost);
-                            receiveStatus.setText("No data Received");
-                        });
-                    }
+                    final String msgConnectionLost = "Connection lost";
+                    runOnUiThread(() -> {
+                        connStatus.setText(msgConnectionLost);
+                        receiveStatus.setText("No data Received");
+                    });
                 }
-            },INTERVAL);
+            }
         }
     }
 
