@@ -43,6 +43,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RequiresApi(api = Build.VERSION_CODES.S)
 public class Btreceiver extends AppCompatActivity {
@@ -369,37 +370,35 @@ public class Btreceiver extends AppCompatActivity {
         @Override
         public void run() {
             byte[] buffer = new byte[1024];
-            int bytes;
+            AtomicInteger bytes = new AtomicInteger();
 
             // continuous data
             while (isConnected) {
-                try {
-                    bytes = connectedInputStream.read(buffer);
+                handler.postDelayed(runnable = () -> {
+                    handler.postDelayed(runnable,INTERVAL);
+                    try {
+                        bytes.set(connectedInputStream.read(buffer));
 
-                    final String strReceived = new String(buffer, 0, bytes);
-                    Log.v("Data masuk1 : ", strReceived);
-                    data = strReceived;
+                        final String strReceived = new String(buffer, 0, bytes.get());
+                        Log.v("Data masuk1 : ", strReceived);
+                        data = strReceived;
 
-                    runOnUiThread(() -> receiveStatus.setText("Receiving data ..."));
+                        client.getPublish("php-mqtt/client/test/pasien",strReceived);
+                        saveSampleWav(strReceived);
+                        saveCleanWav();
 
-                    handler.postDelayed(runnable = () -> {
-                        handler.postDelayed(runnable,INTERVAL);
-                        if (isConnected) {
-                            client.getPublish("php-mqtt/client/test/pasien/"+username+"_"+id,strReceived);
-                            saveSampleWav(strReceived);
-                            saveCleanWav();
-                        }
-                    },INTERVAL);
+                        runOnUiThread(() -> receiveStatus.setText("Receiving data ..."));
 
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
 
-                    final String msgConnectionLost = "Connection lost";
-                    runOnUiThread(() -> {
-                        connStatus.setText(msgConnectionLost);
-                        receiveStatus.setText("No data Received");
-                    });
-                }
+                        final String msgConnectionLost = "Connection lost";
+                        runOnUiThread(() -> {
+                            connStatus.setText(msgConnectionLost);
+                            receiveStatus.setText("No data Received");
+                        });
+                    }
+                },INTERVAL);
             }
         }
     }
