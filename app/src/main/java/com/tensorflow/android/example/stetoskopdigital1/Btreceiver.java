@@ -363,7 +363,7 @@ public class Btreceiver extends AppCompatActivity {
             try {
                 in = socket.getInputStream();
                 out = socket.getOutputStream();
-                out.write(4);
+                out.write(1024);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -373,24 +373,22 @@ public class Btreceiver extends AppCompatActivity {
 
         @Override
         public void run() {
-            byte[] buffer = new byte[4];
+            byte[] buffer = new byte[1024];
             int bytes;
-            StringBuilder sb = new StringBuilder();
 
             // continuous data
-//            while (isConnected) {
-//                isContinuesData = true;
+            while (isConnected) {
+                isContinuesData = true;
                 try {
                     bytes = connectedInputStream.read(buffer);
-//                    data = new String(buffer, 0, bytes);
-                    while (isConnected) {
-                        isContinuesData = true;
-                        sb.append(new String(buffer, 0, bytes));
+                    StringBuilder str = new StringBuilder();
+                    Scanner sc = new Scanner(connectedInputStream);
+                    while(sc.hasNext()){
+                        str.append(new String(buffer, 0, bytes));
                     }
-//                    StringBuilder sb = new StringBuilder();
-//                    sb.append(new String(buffer, 0, bytes));
-//                    data = sb.toString();
-//                    Log.v("Data masuk : ", sb.toString());
+                    data = str.toString();
+
+                    Log.v("Data masuk : ", data);
 
                     runOnUiThread(() -> receiveStatus.setText("Receiving data ..."));
 
@@ -405,10 +403,7 @@ public class Btreceiver extends AppCompatActivity {
 
                     isContinuesData = false;
                 }
-//            }
-
-            data = sb.toString();
-            Log.v("Data masuk : ", sb.toString());
+            }
         }
     }
 
