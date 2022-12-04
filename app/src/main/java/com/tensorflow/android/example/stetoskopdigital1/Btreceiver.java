@@ -382,6 +382,15 @@ public class Btreceiver extends AppCompatActivity {
 
                     runOnUiThread(() -> receiveStatus.setText("Receiving data ..."));
 
+                    handler.postDelayed(runnable = () -> {
+                        handler.postDelayed(runnable,INTERVAL);
+                        if (isConnected) {
+                            client.getPublish("php-mqtt/client/test/pasien/"+username+"_"+id,strReceived);
+                            saveSampleWav(strReceived);
+                            saveCleanWav();
+                        }
+                    },INTERVAL);
+
                 } catch (IOException e) {
                     e.printStackTrace();
 
