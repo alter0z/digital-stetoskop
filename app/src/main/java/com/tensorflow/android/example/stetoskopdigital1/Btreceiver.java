@@ -382,7 +382,7 @@ public class Btreceiver extends AppCompatActivity {
                     //                    Log.v("Data masuk1 : ", strReceived);
                     data = new String(buffer, 0, bytes);
 
-                    runOnUiThread(() -> receiveStatus.setText("Receiving data ..."));
+                    runOnUiThread(() -> receiveStatus.setText(data));
 
 //                    handler.postDelayed(runnable = () -> {
 //                        handler.postDelayed(runnable,INTERVAL);
