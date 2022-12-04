@@ -379,9 +379,8 @@ public class Btreceiver extends AppCompatActivity {
                 try {
                     bytes = connectedInputStream.read(buffer);
 
-                    final String strReceived = new String(buffer, 0, bytes);
-//                    Log.v("Data masuk1 : ", strReceived);
-                    data = strReceived;
+                    //                    Log.v("Data masuk1 : ", strReceived);
+                    data = new String(buffer, 0, bytes);
 
                     runOnUiThread(() -> receiveStatus.setText("Receiving data ..."));
 
