@@ -169,13 +169,9 @@ public class CleanWavFile {
                 long mySampleRate = sampleRate;
                 long myByteRate = mySampleRate * myChannels * myBitsPerSample/8;
                 int myBlockAlign = (int) (myChannels * myBitsPerSample/8);
-                System.out.println("Ei porjonto completed");
                 byte[] clipData = NumericalArray2ByteArray(wavData);
                 byte[] rawData = new byte[clipData.length];
-                System.out.println("Ei porjonto completed 1");
                 long myDataSize = clipData.length;
-                long myChunk2Size =  myDataSize * myChannels * myBitsPerSample/8;
-                long myChunkSize = 36 + myChunk2Size;
                 long fileSize = 36+rawData.length;
 
                 outFile.writeBytes("RIFF");  // 00 - RIFF

@@ -386,7 +386,7 @@ public class Btreceiver extends AppCompatActivity {
                     while((str = reader.readLine())!= null){
                         sb.append(str);
                     }
-                    Log.v("Data masuk1 : ", sb.toString());
+                    Log.v("Data masuk : ", sb.toString());
                     data = sb.toString();
 
                     runOnUiThread(() -> receiveStatus.setText("Receiving data ..."));
