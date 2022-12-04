@@ -43,6 +43,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.UUID;
@@ -227,8 +228,8 @@ public class Btreceiver extends AppCompatActivity {
         handler.postDelayed(runnable = () -> {
             handler.postDelayed(runnable,INTERVAL);
             if (isConnected && isContinuesData) {
-                client.getPublish("php-mqtt/client/test/pasien",data);
-                saveSampleWav(data);
+//                client.getPublish("php-mqtt/client/test/pasien",data);
+//                saveSampleWav(data);
                 saveCleanWav();
 //                System.out.println(data);
             }
@@ -433,6 +434,7 @@ public class Btreceiver extends AppCompatActivity {
                 System.out.println(audioFileAbsolutePath);
                 CleanWavFile audioFileProcess = new CleanWavFile();
                 float[] audioData = audioFileProcess.ReadingAudioFile(audioFileAbsolutePath);
+                client.getPublish("php-mqtt/client/test/pasien", Arrays.toString(audioData));
 
 //                float[] manipulatedAudioData = new float[audioData.length];
             /*
