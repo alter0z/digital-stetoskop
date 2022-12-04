@@ -252,6 +252,7 @@ public class CleanWavFile {
                 outFile.write(clipData);                                         // 44 - the actual data itself - just a long string of numbers
                 System.out.println("clip "+Arrays.toString(clipData));
                 System.out.println("wav "+Arrays.toString(wavData));
+                System.out.println("out "+outFile);
             }
             catch (Exception e){
                 System.out.println("Error "+e);
