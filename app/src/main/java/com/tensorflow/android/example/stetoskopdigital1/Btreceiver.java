@@ -381,7 +381,7 @@ public class Btreceiver extends AppCompatActivity {
                 try {
                     InputStreamReader isReader = new InputStreamReader(connectedInputStream);
                     BufferedReader reader = new BufferedReader(isReader);
-                    StringBuffer sb = new StringBuffer();
+                    StringBuilder sb = new StringBuilder();
                     String str;
                     while((str = reader.readLine())!= null){
                         sb.append(str);
