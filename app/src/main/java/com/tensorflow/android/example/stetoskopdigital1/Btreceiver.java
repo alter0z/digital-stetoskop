@@ -223,7 +223,7 @@ public class Btreceiver extends AppCompatActivity {
     protected void onResume() {
         handler.postDelayed(runnable = () -> {
             handler.postDelayed(runnable,INTERVAL);
-            if (isConnected) {
+            if (isConnected && isContinuesData) {
                 client.getPublish("php-mqtt/client/test/pasien",data);
                 saveSampleWav(data);
                 saveCleanWav();
@@ -370,28 +370,19 @@ public class Btreceiver extends AppCompatActivity {
 
         @Override
         public void run() {
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[2048];
             int bytes;
 
             // continuous data
-            if (isConnected) {
-//                isContinuesData = true;
+            while (isConnected) {
+                isContinuesData = true;
                 try {
                     bytes = connectedInputStream.read(buffer);
 
-                    //                    Log.v("Data masuk1 : ", strReceived);
+                    Log.v("Data masuk1 : ", data);
                     data = new String(buffer, 0, bytes);
 
-                    runOnUiThread(() -> receiveStatus.setText(data));
-
-//                    handler.postDelayed(runnable = () -> {
-//                        handler.postDelayed(runnable,INTERVAL);
-//                        if (isConnected) {
-//                            client.getPublish("php-mqtt/client/test/pasien",strReceived);
-//                            saveSampleWav(strReceived);
-//                            saveCleanWav();
-//                        }
-//                    },INTERVAL);
+                    runOnUiThread(() -> receiveStatus.setText("Receiving data ..."));
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -402,7 +393,7 @@ public class Btreceiver extends AppCompatActivity {
                         receiveStatus.setText("No data Received");
                     });
 
-//                    isContinuesData = false;
+                    isContinuesData = false;
                 }
             }
         }
