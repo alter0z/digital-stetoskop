@@ -43,6 +43,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.UUID;
 
@@ -61,7 +62,7 @@ public class Btreceiver extends AppCompatActivity {
     LinearLayout pane;
     Button btnDisconnect;
     private BluetoothDevice device;
-    String data = "samples";
+    String data;
     private byte[] finalData;
     Handler handler = new Handler();
     Runnable runnable;
@@ -372,25 +373,19 @@ public class Btreceiver extends AppCompatActivity {
 
         @Override
         public void run() {
-            byte[] buffer = new byte[2048];
+            byte[] buffer = new byte[1024];
             int bytes;
 
             // continuous data
             while (isConnected) {
                 isContinuesData = true;
                 try {
-                    InputStreamReader isReader = new InputStreamReader(connectedInputStream);
-                    BufferedReader reader = new BufferedReader(isReader);
-                    StringBuilder sb = new StringBuilder();
-                    String str;
-                    while((str = reader.readLine())!= null){
-                        sb.append(str);
-                    }
-//                    bytes = connectedInputStream.read(buffer);
+                    bytes = connectedInputStream.read(buffer);
 //                    data = new String(buffer, 0, bytes);
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(new String(buffer, 0, bytes));
                     data = sb.toString();
-
-                    Log.v("Data masuk : ", data);
+                    Log.v("Data masuk : ", sb.toString());
 
                     runOnUiThread(() -> receiveStatus.setText("Receiving data ..."));
 
