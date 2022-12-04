@@ -223,9 +223,9 @@ public class Btreceiver extends AppCompatActivity {
         handler.postDelayed(runnable = () -> {
             handler.postDelayed(runnable,INTERVAL);
             if (isConnected) {
+                client.getPublish("php-mqtt/client/test/pasien/"+username+"_"+id,data);
                 saveSampleWav(data);
                 saveCleanWav();
-                client.getPublish("php-mqtt/client/test/pasien/"+username+"_"+id,data);
             }
         },INTERVAL);
         super.onResume();
