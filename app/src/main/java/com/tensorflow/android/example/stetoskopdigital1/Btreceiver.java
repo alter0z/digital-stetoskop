@@ -35,10 +35,12 @@ import com.tensorflow.android.R;
 import com.tensorflow.android.audio.features.CleanWavFile;
 import com.tensorflow.android.services.MqttClient;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Set;
@@ -377,10 +379,18 @@ public class Btreceiver extends AppCompatActivity {
             while (isConnected) {
                 isContinuesData = true;
                 try {
-                    bytes = connectedInputStream.read(buffer);
+                    InputStreamReader isReader = new InputStreamReader(connectedInputStream);
+                    BufferedReader reader = new BufferedReader(isReader);
+                    StringBuffer sb = new StringBuffer();
+                    String str;
+                    while((str = reader.readLine())!= null){
+                        sb.append(str);
+                    }
+//                    bytes = connectedInputStream.read(buffer);
+//                    data = new String(buffer, 0, bytes);
+                    data = sb.toString();
 
-                    Log.v("Data masuk1 : ", data);
-                    data = new String(buffer, 0, bytes);
+                    Log.v("Data masuk : ", data);
 
                     runOnUiThread(() -> receiveStatus.setText("Receiving data ..."));
 
