@@ -378,7 +378,7 @@ public class Btreceiver extends AppCompatActivity {
             int bytes;
 
             // continuous data
-            if (isConnected) {
+            while (isConnected) {
                 isContinuesData = true;
                 try {
                     bytes = connectedInputStream.read(buffer);
