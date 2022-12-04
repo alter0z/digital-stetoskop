@@ -372,10 +372,10 @@ public class Btreceiver extends AppCompatActivity {
             byte[] buffer = new byte[1024];
             AtomicInteger bytes = new AtomicInteger();
 
-            // continuous data
-            while (isConnected) {
-                handler.postDelayed(runnable = () -> {
-                    handler.postDelayed(runnable,INTERVAL);
+            handler.postDelayed(runnable = () -> {
+                handler.postDelayed(runnable,INTERVAL);
+                // continuous data
+                while (isConnected) {
                     try {
                         bytes.set(connectedInputStream.read(buffer));
 
@@ -398,8 +398,8 @@ public class Btreceiver extends AppCompatActivity {
                             receiveStatus.setText("No data Received");
                         });
                     }
-                },INTERVAL);
-            }
+                }
+            },INTERVAL);
         }
     }
 
