@@ -381,12 +381,7 @@ public class Btreceiver extends AppCompatActivity {
                 isContinuesData = true;
                 try {
                     bytes = connectedInputStream.read(buffer);
-                    StringBuilder str = new StringBuilder();
-                    Scanner sc = new Scanner(connectedInputStream);
-                    while(sc.hasNext()){
-                        str.append(new String(buffer, 0, bytes));
-                    }
-                    data = str.toString();
+                    data = new String(buffer, 0, bytes);
 
                     Log.v("Data masuk : ", data);
 
