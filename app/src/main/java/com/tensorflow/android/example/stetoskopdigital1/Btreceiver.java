@@ -36,6 +36,7 @@ import com.tensorflow.android.audio.features.CleanWavFile;
 import com.tensorflow.android.services.MqttClient;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -150,10 +151,10 @@ public class Btreceiver extends AppCompatActivity {
 //        client = new MqttClient(this);
 
         refresh.setOnClickListener(v -> {
-//            startActivity(new Intent(Btreceiver.this, Btreceiver.class));
-//            finish();
+            startActivity(new Intent(Btreceiver.this, Btreceiver.class));
+            finish();
 //            saveSampleWav(data);
-            saveCleanWav();
+//            saveCleanWav();
 //            client.getPublish("php-mqtt/client/test/pasien/"+username+"_"+id,"test");
         });
 
@@ -228,8 +229,8 @@ public class Btreceiver extends AppCompatActivity {
         handler.postDelayed(runnable = () -> {
             handler.postDelayed(runnable,INTERVAL);
             if (isConnected) {
-//                client.getPublish("php-mqtt/client/test/pasien",data);
-//                saveSampleWav(data);
+                client.getPublish("php-mqtt/client/test/pasien",data);
+                saveSampleWav(data);
                 saveCleanWav();
 //                System.out.println(data);
             }
@@ -374,15 +375,16 @@ public class Btreceiver extends AppCompatActivity {
 
         @Override
         public void run() {
-            byte[] buffer = new byte[1024];
-            int bytes;
+//            byte[] buffer = new byte[1024];
+//            int bytes;
 
             // continuous data
             while (isConnected) {
                 isContinuesData = true;
                 try {
-                    bytes = connectedInputStream.read(buffer);
-                    data = new String(buffer, 0, bytes);
+//                    bytes = connectedInputStream.read(buffer);
+//                    data = new String(buffer, 0, bytes);
+                    data = convertInputStreamToString(connectedInputStream);
 
                     Log.v("Data masuk : ", data);
 
@@ -430,11 +432,11 @@ public class Btreceiver extends AppCompatActivity {
             try{
                 ContextWrapper contextWrapper = new ContextWrapper(this);
                 File file = contextWrapper.getExternalFilesDir("sample wav");
-                String audioFileAbsolutePath = file.getAbsolutePath()+"/sample5s.wav";
+                String audioFileAbsolutePath = file.getAbsolutePath()+"/sample.wav";
                 System.out.println(audioFileAbsolutePath);
                 CleanWavFile audioFileProcess = new CleanWavFile();
                 float[] audioData = audioFileProcess.ReadingAudioFile(audioFileAbsolutePath);
-                client.getPublish("php-mqtt/client/test/pasien", Arrays.toString(audioData));
+//                client.getPublish("php-mqtt/client/test/pasien", Arrays.toString(audioData));
 
 //                float[] manipulatedAudioData = new float[audioData.length];
             /*
@@ -496,5 +498,17 @@ public class Btreceiver extends AppCompatActivity {
 
         int check = ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT);
         return check == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private static String convertInputStreamToString(InputStream is) throws IOException {
+
+        ByteArrayOutputStream result = new ByteArrayOutputStream();
+        byte[] buffer = new byte[8192];
+        int length;
+        while ((length = is.read(buffer)) != -1) {
+            result.write(buffer, 0, length);
+        }
+
+        return result.toString("UTF-8");
     }
 }
