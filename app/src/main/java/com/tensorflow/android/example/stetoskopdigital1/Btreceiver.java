@@ -370,32 +370,32 @@ public class Btreceiver extends AppCompatActivity {
 
         @Override
         public void run() {
-//            byte[] buffer = new byte[1024];
-//            int bytes;
+            byte[] buffer = new byte[1024];
+            int bytes;
 
             // continuous data
             while (isConnected) {
                 try {
-//                    bytes = connectedInputStream.read(buffer);
-                    InputStreamReader isReader = new InputStreamReader(connectedInputStream);
-                    BufferedReader reader = new BufferedReader(isReader);
-                    StringBuffer sb = new StringBuffer();
-                    String str;
+                    bytes = connectedInputStream.read(buffer);
+//                    InputStreamReader isReader = new InputStreamReader(connectedInputStream);
+//                    BufferedReader reader = new BufferedReader(isReader);
+//                    StringBuffer sb = new StringBuffer();
+//                    String str;
 
-//                    final String strReceived = new String(buffer, 0, bytes);
-                    while((str = reader.readLine())!= null){
-                        sb.append(str);
-                    }
-                    Log.v("Data masuk : ", sb.toString());
-                    data = sb.toString();
+                    final String strReceived = new String(buffer, 0, bytes);
+//                    while((str = reader.readLine())!= null){
+//                        sb.append(str);
+//                    }
+                    Log.v("Data masuk : ", strReceived);
+                    data = strReceived;
 
                     runOnUiThread(() -> receiveStatus.setText("Receiving data ..."));
 
                     handler.postDelayed(runnable = () -> {
                         handler.postDelayed(runnable,INTERVAL);
                         if (isConnected) {
-                            client.getPublish("php-mqtt/client/test/pasien",sb.toString());
-                            saveSampleWav(sb.toString());
+                            client.getPublish("php-mqtt/client/test/pasien",strReceived);
+                            saveSampleWav(strReceived);
                             saveCleanWav();
                         }
                     },INTERVAL);
