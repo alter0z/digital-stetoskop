@@ -35,10 +35,12 @@ import com.tensorflow.android.R;
 import com.tensorflow.android.audio.features.CleanWavFile;
 import com.tensorflow.android.services.MqttClient;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Set;
@@ -368,25 +370,32 @@ public class Btreceiver extends AppCompatActivity {
 
         @Override
         public void run() {
-            byte[] buffer = new byte[1024];
-            int bytes;
+//            byte[] buffer = new byte[1024];
+//            int bytes;
 
             // continuous data
             while (isConnected) {
                 try {
-                    bytes = connectedInputStream.read(buffer);
+//                    bytes = connectedInputStream.read(buffer);
+                    InputStreamReader isReader = new InputStreamReader(connectedInputStream);
+                    BufferedReader reader = new BufferedReader(isReader);
+                    StringBuffer sb = new StringBuffer();
+                    String str;
 
-                    final String strReceived = new String(buffer, 0, bytes);
-                    Log.v("Data masuk1 : ", strReceived);
-                    data = strReceived;
+//                    final String strReceived = new String(buffer, 0, bytes);
+                    while((str = reader.readLine())!= null){
+                        sb.append(str);
+                    }
+                    Log.v("Data masuk1 : ", sb.toString());
+                    data = sb.toString();
 
                     runOnUiThread(() -> receiveStatus.setText("Receiving data ..."));
 
                     handler.postDelayed(runnable = () -> {
                         handler.postDelayed(runnable,INTERVAL);
                         if (isConnected) {
-                            client.getPublish("php-mqtt/client/test/pasien",strReceived);
-                            saveSampleWav(strReceived);
+                            client.getPublish("php-mqtt/client/test/pasien",sb.toString());
+                            saveSampleWav(sb.toString());
                             saveCleanWav();
                         }
                     },INTERVAL);
