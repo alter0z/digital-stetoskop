@@ -6,8 +6,10 @@ import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -66,7 +68,8 @@ public class Btreceiver extends AppCompatActivity {
     private boolean isConnected = false;
     private Dialog popup;
 //    private TextView fileStatus;
-
+    public static final String my_shared_preferences = "my_shared_preferences";
+    SharedPreferences sharedpreferences;
     ArrayAdapter<String> pairedDeviceAdapter;
     private UUID myUUID;
     ThreadConnectBTdevice myThreadConnectBTdevice;
@@ -77,9 +80,10 @@ public class Btreceiver extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bluetoothrecord);
 
-        // get string intent
-        id = getIntent().getStringExtra(TAG_ID);
-        username = getIntent().getStringExtra(TAG_USERNAME);
+        // get id & username
+        sharedpreferences = getSharedPreferences(my_shared_preferences, Context.MODE_PRIVATE);
+        id = sharedpreferences.getString(TAG_ID, null);
+        username = sharedpreferences.getString(TAG_USERNAME, null);
 
 //        Toast.makeText(this, "Pair your device first before using the app", Toast.LENGTH_LONG).show();
 
@@ -95,6 +99,8 @@ public class Btreceiver extends AppCompatActivity {
 //        fileStatus = findViewById(R.id.writefile);
 
         popup = new Dialog(this);
+
+        client = new MqttClient(this);
 
         back.setOnClickListener(view -> {
             if (!isConnected) {
@@ -139,11 +145,11 @@ public class Btreceiver extends AppCompatActivity {
 //        client = new MqttClient(this);
 
         refresh.setOnClickListener(v -> {
-//            startActivity(new Intent(Btreceiver.this, Btreceiver.class));
-//            finish();
+            startActivity(new Intent(Btreceiver.this, Btreceiver.class));
+            finish();
 //            saveSampleWav(data);
 //            saveCleanWav();
-            client = new MqttClient(this);
+//            client.getPublish("php-mqtt/client/test/pasien/"+username+"_"+id,"test");
         });
 
         btnDisconnect.setOnClickListener(v -> {
@@ -219,7 +225,7 @@ public class Btreceiver extends AppCompatActivity {
             if (isConnected) {
                 saveSampleWav(data);
                 saveCleanWav();
-//                client.getPublish(this,username+"_"+id,data);
+                client.getPublish("php-mqtt/client/test/pasien/"+username+"_"+id,data);
             }
         },INTERVAL);
         super.onResume();
