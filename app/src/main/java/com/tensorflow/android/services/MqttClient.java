@@ -38,7 +38,7 @@ public class MqttClient {
 
         Random random = new Random();
 
-        client = new MqttAndroidClient(context, "tcp://103.161.184.235:8883"/*serverUri*/, username+"uadshowaidhoqwwhoduqwhd"+random.nextInt(), Ack.AUTO_ACK);
+        client = new MqttAndroidClient(context, "tcp://broker.hivemq.com:1883"/*serverUri*/, username+"uadshowaidhoqwwhoduqwhd"+random.nextInt(), Ack.AUTO_ACK);
         options = new MqttConnectOptions();
         options.setUserName(username);
         options.setPassword(password.toCharArray());
