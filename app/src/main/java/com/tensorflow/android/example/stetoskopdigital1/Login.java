@@ -83,37 +83,43 @@ public class Login extends AppCompatActivity {
 
         // Cek session login jika TRUE maka langsung buka MainActivity
         sharedpreferences = getSharedPreferences(my_shared_preferences, Context.MODE_PRIVATE);
-        session = sharedpreferences.getBoolean(session_status, false);
+//        session = sharedpreferences.getBoolean(session_status, false);
+        session = true;
         id = sharedpreferences.getString(TAG_ID, null);
         username = sharedpreferences.getString(TAG_USERNAME, null);
 
         if (session) {
             Intent intent = new Intent(Login.this, MainActivity1.class);
-            intent.putExtra(TAG_ID, id);
-            intent.putExtra(TAG_USERNAME, username);
+//            intent.putExtra(TAG_ID, id);
+//            intent.putExtra(TAG_USERNAME, username);
             finish();
             startActivity(intent);
         }
 
 
         btn_login.setOnClickListener(v -> {
-            // TODO Auto-generated method stub
-            String username = txt_username.getText().toString();
-            String password = txt_password.getText().toString();
-
-            // mengecek kolom yang kosong
-            if (username.trim().length() > 0 && password.trim().length() > 0) {
-                if (conMgr.getActiveNetworkInfo() != null
-                        && conMgr.getActiveNetworkInfo().isAvailable()
-                        && conMgr.getActiveNetworkInfo().isConnected()) {
-                    checkLogin(this, username, password);
-                } else {
-                    Toast.makeText(getApplicationContext() ,"No Internet Connection", Toast.LENGTH_LONG).show();
-                }
-            } else {
-                // Prompt user to enter credentials
-                Toast.makeText(getApplicationContext() ,"Kolom tidak boleh kosong", Toast.LENGTH_LONG).show();
-            }
+            Intent intent = new Intent(Login.this, MainActivity1.class);
+//            intent.putExtra(TAG_ID, id);
+//            intent.putExtra(TAG_USERNAME, username);
+            finish();
+            startActivity(intent);
+//            // TODO Auto-generated method stub
+//            String username = txt_username.getText().toString();
+//            String password = txt_password.getText().toString();
+//
+//            // mengecek kolom yang kosong
+//            if (username.trim().length() > 0 && password.trim().length() > 0) {
+//                if (conMgr.getActiveNetworkInfo() != null
+//                        && conMgr.getActiveNetworkInfo().isAvailable()
+//                        && conMgr.getActiveNetworkInfo().isConnected()) {
+//                    checkLogin(this, username, password);
+//                } else {
+//                    Toast.makeText(getApplicationContext() ,"No Internet Connection", Toast.LENGTH_LONG).show();
+//                }
+//            } else {
+//                // Prompt user to enter credentials
+//                Toast.makeText(getApplicationContext() ,"Kolom tidak boleh kosong", Toast.LENGTH_LONG).show();
+//            }
         });
 
         btn_register.setOnClickListener(v -> {

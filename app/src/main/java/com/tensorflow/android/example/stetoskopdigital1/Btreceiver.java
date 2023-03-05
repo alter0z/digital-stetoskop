@@ -375,7 +375,8 @@ public class Btreceiver extends AppCompatActivity {
 
         @Override
         public void run() {
-            byte[] buffer = new byte[8192];
+//            byte[] buffer = new byte[8192];
+            byte[] buffer = new byte[1024];
             int bytes;
 
             // continuous data

@@ -4,11 +4,6 @@
     <facet type="android" name="Android">
       <configuration>
         <option name="SELECTED_BUILD_VARIANT" value="debug" />
-        <option name="ASSEMBLE_TASK_NAME" value="assembleDebug" />
-        <option name="COMPILE_JAVA_TASK_NAME" value="compileDebugSources" />
-        <afterSyncTasks>
-          <task>generateDebugSources</task>
-        </afterSyncTasks>
         <option name="ALLOW_USER_CONFIGURATION" value="false" />
         <option name="MANIFEST_FILE_RELATIVE_PATH" value="/src/main/AndroidManifest.xml" />
         <option name="RES_FOLDER_RELATIVE_PATH" value="/src/main/res" />
@@ -38,13 +33,6 @@
           </option>
           <option name="languageVersion" value="1.7" />
           <option name="apiVersion" value="1.7" />
-          <option name="pluginOptions">
-            <array>
-              <option value="plugin:org.jetbrains.kotlin.android:experimental=false" />
-              <option value="plugin:org.jetbrains.kotlin.android:enabled=true" />
-              <option value="plugin:org.jetbrains.kotlin.android:defaultCacheImplementation=hashMap" />
-            </array>
-          </option>
           <option name="pluginClasspaths">
             <array>
               <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-android-extensions/1.7.10/6f72eaede229ab1f700f8a3583f7bef832b56f48/kotlin-android-extensions-1.7.10.jar" />
@@ -59,6 +47,13 @@
               <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar" />
             </array>
           </option>
+          <option name="pluginOptions">
+            <array>
+              <option value="plugin:org.jetbrains.kotlin.android:experimental=false" />
+              <option value="plugin:org.jetbrains.kotlin.android:enabled=true" />
+              <option value="plugin:org.jetbrains.kotlin.android:defaultCacheImplementation=hashMap" />
+            </array>
+          </option>
           <option name="errors">
             <ArgumentParseErrors />
           </option>
@@ -66,14 +61,22 @@
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8" inherit-compiler-output="true">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
+    <output url="file://$MODULE_DIR$/../../../app/build/intermediates/javac/debug/classes" />
+    <output-test url="file://$MODULE_DIR$/../../../app/build/intermediates/javac/debugUnitTest/classes" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../app/build/generated/aidl_source_output_dir/debugAndroidTest/out" />
-    <content url="file://$MODULE_DIR$/../../../app/build/generated/ap_generated_sources/debugAndroidTest/out" />
+    <content url="file://$MODULE_DIR$/../../../app/build/generated/ap_generated_sources/debugAndroidTest/out">
+      <sourceFolder url="file://$MODULE_DIR$/../../../app/build/generated/ap_generated_sources/debugAndroidTest/out" isTestSource="true" generated="true" />
+    </content>
     <content url="file://$MODULE_DIR$/../../../app/build/generated/renderscript_source_output_dir/debugAndroidTest/out" />
-    <content url="file://$MODULE_DIR$/../../../app/build/generated/res/resValues/androidTest/debug" />
+    <content url="file://$MODULE_DIR$/../../../app/build/generated/res/resValues/androidTest/debug">
+      <sourceFolder url="file://$MODULE_DIR$/../../../app/build/generated/res/resValues/androidTest/debug" type="java-test-resource" />
+    </content>
     <content url="file://$MODULE_DIR$/../../../app/build/generated/res/rs/androidTest/debug" />
-    <content url="file://$MODULE_DIR$/../../../app/build/generated/source/buildConfig/androidTest/debug" />
+    <content url="file://$MODULE_DIR$/../../../app/build/generated/source/buildConfig/androidTest/debug">
+      <sourceFolder url="file://$MODULE_DIR$/../../../app/build/generated/source/buildConfig/androidTest/debug" isTestSource="true" generated="true" />
+    </content>
     <content url="file://$MODULE_DIR$/../../../app/src/androidTest">
       <sourceFolder url="file://$MODULE_DIR$/../../../app/src/androidTest/java" isTestSource="true" />
     </content>
