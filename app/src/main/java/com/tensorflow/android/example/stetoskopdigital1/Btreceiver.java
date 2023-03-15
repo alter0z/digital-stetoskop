@@ -411,16 +411,26 @@ public class Btreceiver extends AppCompatActivity {
 //            int bytes = 0;
 
             // continuous data
-            if (isConnected) {
+            while (isConnected) {
 //                int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT);
 //                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
 //                    return;
 //                }
 //                mAudioRecord = new AudioRecord(AUDIO_SOURCE, SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT, bufferSize);
 //                mAudioRecord.startRecording();
-                mIsRecording = true;
+//                mIsRecording = true;
 //                isContinuesData = true;
-                saveCleanWav(connectedInputStream, connectedSocket);
+                try {
+                    runOnUiThread(() -> receiveStatus.setText("Receiving data"));
+                    saveCleanWav(connectedInputStream, connectedSocket);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    final String msgConnectionLost = "Connection lost";
+                    runOnUiThread(() -> {
+                        connStatus.setText(msgConnectionLost);
+                        receiveStatus.setText("No data Received");
+                    });
+                }
 //                    while (bytes != -1) {
 //                        if (bytes != -1) {
 //                            bytes = connectedInputStream.read(buffer);
@@ -435,13 +445,6 @@ public class Btreceiver extends AppCompatActivity {
 //                        connectedOutputStream.write(buffer, 0, bytes);
 //                    }
 //                    connectedOutputStream.close();
-            } else {
-                try {
-                    connectedInputStream.close();
-                    connectedOutputStream.close();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
             }
         }
     }
@@ -468,16 +471,10 @@ public class Btreceiver extends AppCompatActivity {
         }
     }
 
-    private void saveCleanWav(InputStream inputStream, BluetoothSocket socket) {
+    private void saveCleanWav(InputStream inputStream, BluetoothSocket socket) throws IOException {
         if (isExtStorageWritable() && checkPermission()) {
-            try{
                 CleanWavFile audioFileProcess = new CleanWavFile();
                 audioFileProcess.WriteCleanAudioWav(this, System.currentTimeMillis()+".wav", inputStream, socket);
-            }
-            catch (Exception e){
-//                fileStatus.setText(e.toString());
-                System.out.println("Error: "+e);
-            }
         } else {
 //            fileStatus.setText("Cant write data");
             Toast.makeText(Btreceiver.this, "Cant write data", Toast.LENGTH_LONG).show();
