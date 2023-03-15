@@ -1,18 +1,10 @@
 package com.tensorflow.android.noiseclassifier
 
 
-class Recognition {
+class Recognition(id: String, title: String, private var confidence: Float) {
 
-    private var id : String? = null
-    private var title : String? = null
-    private var confidence : Float
-
-    constructor(id: String, title: String, confidence: Float){
-
-        this.id = id
-        this.title = title
-        this.confidence = confidence
-    }
+    private var id : String? = id
+    private var title : String? = title
 
     fun getId(): String? {
         return id
