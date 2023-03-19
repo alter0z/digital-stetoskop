@@ -1,5 +1,7 @@
 package com.tensorflow.android.example.stetoskopdigital1;
 
+import static java.nio.ByteOrder.LITTLE_ENDIAN;
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
@@ -39,14 +41,19 @@ import com.tensorflow.android.R;
 import com.tensorflow.android.audio.features.CleanWavFile;
 import com.tensorflow.android.services.MqttClient;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -202,6 +209,8 @@ public class Btreceiver extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        checkPermission();
+
         //Turn ON BlueTooth if it is OFF
         if (!bluetoothAdapter.isEnabled()) {
             Intent enableIntent;
@@ -312,7 +321,6 @@ public class Btreceiver extends AppCompatActivity {
             if (checkBtPermission()) {
                 try {
                     bluetoothSocket = device.createRfcommSocketToServiceRecord(myUUID);
-//                    textStatus.setText("bluetoothSocket: \n" + bluetoothSocket);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -379,152 +387,103 @@ public class Btreceiver extends AppCompatActivity {
             OutputStream out = null;
             connectedSocket = socket;
 
+            try {
+                in = socket.getInputStream();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             if (isExtStorageWritable() && checkPermission()) {
                 try {
                     ContextWrapper contextWrapper = new ContextWrapper(Btreceiver.this);
-                    File audioDir = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_RECORDINGS);
-                    File files = new File(audioDir, "raw.wav");
-                    in = socket.getInputStream();
-//                out = socket.getOutputStream();
+                    File audioDir = contextWrapper.getExternalFilesDir("sample wav");
+                    File files = new File(audioDir,"sample.wav");
                     out = Files.newOutputStream(files.toPath());
-//                    fos.close();
-//                fileStatus.setText("saved to "+audioDir.getAbsolutePath());
-//                    Toast.makeText(Btreceiver.this, "saved to "+audioDir.getAbsolutePath(), Toast.LENGTH_LONG).show();
+
                 } catch (Exception e) {
-//                fileStatus.setText(e.toString());
                     Toast.makeText(Btreceiver.this, e.toString(), Toast.LENGTH_LONG).show();
                 }
             } else {
-//            fileStatus.setText("Cant write data");
                 Toast.makeText(Btreceiver.this, "Cant write data", Toast.LENGTH_LONG).show();
             }
 
             connectedInputStream = in;
             connectedOutputStream = out;
-//            dataOutStream = connectedOutputStream;
         }
 
         @Override
         public void run() {
-//            byte[] buffer = new byte[8192];
-//            byte[] buffer = new byte[1024];
-//            int bytes = 0;
+            byte[] buffer = new byte[1024];
+            int bytesRead = 0;
+            long audioLength = 0;
 
             // continuous data
-            while (isConnected) {
-//                int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT);
-//                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-//                    return;
-//                }
-//                mAudioRecord = new AudioRecord(AUDIO_SOURCE, SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT, bufferSize);
-//                mAudioRecord.startRecording();
-//                mIsRecording = true;
+            if (isConnected) {
+                audioLength += 44 - 8; // this actually header length - 8
 //                isContinuesData = true;
                 try {
                     runOnUiThread(() -> receiveStatus.setText("Receiving data"));
-                    saveCleanWav(connectedInputStream, connectedSocket);
+
+                    while (bytesRead  != -1) {
+                        bytesRead = connectedInputStream.read(buffer);
+                        if (bytesRead != -1) {
+                            connectedOutputStream.write(buffer, 0, bytesRead);
+                            audioLength += bytesRead;
+                        }
+                    }
                 } catch (IOException e) {
+                    long finalAudioLength = audioLength;
+                    runOnUiThread(() -> receiveStatus.setText(String.valueOf(finalAudioLength+36)));
+                    saveCleanWav();
+                    try {
+                        connectedOutputStream.close();
+                        connectedSocket.close();
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
                     e.printStackTrace();
                     final String msgConnectionLost = "Connection lost";
                     runOnUiThread(() -> {
                         connStatus.setText(msgConnectionLost);
-                        receiveStatus.setText("No data Received");
+                        receiveStatus.setText("No data received");
                     });
                 }
-//                    while (bytes != -1) {
-//                        if (bytes != -1) {
-//                            bytes = connectedInputStream.read(buffer);
-//                            connectedOutputStream.write(buffer, 0, bytes);
-//                            data = new String(buffer, 0, bytes);
-////                        connectedOutputStream.write(buffer, 0, bytes);
-////                    data = convertInputStreamToString(connectedInputStream);
-//                            runOnUiThread(() -> receiveStatus.setText(data));
-//                        }
-//                    }
-//                    while (mIsRecording && (bytes = connectedInputStream.read(buffer)) > 0) {
-//                        connectedOutputStream.write(buffer, 0, bytes);
-//                    }
-//                    connectedOutputStream.close();
             }
         }
     }
 
-    private void saveSampleWav(String data) {
+    private void saveCleanWav() {
         if (isExtStorageWritable() && checkPermission()) {
-            try {
+            try{
                 ContextWrapper contextWrapper = new ContextWrapper(this);
-                File audioDir = contextWrapper.getExternalFilesDir("sample wav");
-//                File files = new File(audioDir,System.currentTimeMillis()+".wav");
-                File files = new File(audioDir,"sample.wav");
-                FileOutputStream fos = new FileOutputStream(files);
-                fos.write(data.getBytes());
-                fos.close();
-//                fileStatus.setText("saved to "+audioDir.getAbsolutePath());
-                Toast.makeText(Btreceiver.this, "saved to "+audioDir.getAbsolutePath(), Toast.LENGTH_LONG).show();
-            } catch (Exception e) {
-//                fileStatus.setText(e.toString());
-                Toast.makeText(Btreceiver.this, e.toString(), Toast.LENGTH_LONG).show();
+                File file = contextWrapper.getExternalFilesDir("sample wav");
+                String audioFileAbsolutePath = file.getAbsolutePath()+"/sample.wav";
+                System.out.println(audioFileAbsolutePath);
+                CleanWavFile audioFileProcess = new CleanWavFile();
+                float[] audioData = audioFileProcess.ReadingAudioFile(audioFileAbsolutePath);
+                short[] int16 =  float32ToInt16(audioData);
+                audioFileProcess.WriteCleanAudioWav(this,System.currentTimeMillis()+".wav", int16);
+            }
+            catch (Exception e){
+                System.out.println("Error: "+e);
             }
         } else {
-//            fileStatus.setText("Cant write data");
             Toast.makeText(Btreceiver.this, "Cant write data", Toast.LENGTH_LONG).show();
         }
     }
 
-    private void saveCleanWav(InputStream inputStream, BluetoothSocket socket) throws IOException {
-        if (isExtStorageWritable() && checkPermission()) {
-                CleanWavFile audioFileProcess = new CleanWavFile();
-                audioFileProcess.WriteCleanAudioWav(this, System.currentTimeMillis()+".wav", inputStream, socket);
-        } else {
-//            fileStatus.setText("Cant write data");
-            Toast.makeText(Btreceiver.this, "Cant write data", Toast.LENGTH_LONG).show();
-        }
-    }
-//    private void saveCleanWav() {
-//        if (isExtStorageWritable() && checkPermission()) {
-//            try{
-//                ContextWrapper contextWrapper = new ContextWrapper(this);
-//                File file = contextWrapper.getExternalFilesDir("sample wav");
-//                String audioFileAbsolutePath = file.getAbsolutePath()+"/sample.wav";
-//                System.out.println(audioFileAbsolutePath);
-//                CleanWavFile audioFileProcess = new CleanWavFile();
-//                float[] audioData = audioFileProcess.ReadingAudioFile(audioFileAbsolutePath);
-////                client.getPublish("php-mqtt/client/test/pasien", Arrays.toString(audioData));
-//
-////                float[] manipulatedAudioData = new float[audioData.length];
-//            /*
-//              Assume did some manipulation on the wav file aka over audioData array[] and got new array named manipulatedAudioData[]
-//            */
-//                short[] int16 =  float32ToInt16(audioData); // suppose, the new wav file's each sample will be in int16 Format
-////                short[] data = (short) audioData;
-//                audioFileProcess.WriteCleanAudioWav(this,System.currentTimeMillis()+".wav", int16);
-//            }
-//            catch (Exception e){
-////                fileStatus.setText(e.toString());
-//                System.out.println("Error: "+e);
-//            }
-//        } else {
-////            fileStatus.setText("Cant write data");
-//            Toast.makeText(Btreceiver.this, "Cant write data", Toast.LENGTH_LONG).show();
-//        }
-//    }
-
-    public static short[] float32ToInt16(float[] arr){  //int[]
-        // logic is built to support the numpy.int16 output
+    public static short[] float32ToInt16(float[] arr) {
         short[] int16Arr = new short [arr.length];
         for(int i=0; i<arr.length; i++){
             if(arr[i]<0) {
                 if (arr[i]>-1) {
                     int16Arr[i] = 0;
-                }
-                else{
+                } else {
                     int16Arr[i] = (short) Math.ceil(arr[i]);
                 }
-            }
-            else if (arr[i]>0){
+            } else if (arr[i]>0){
                 int16Arr[i] = (short) Math.floor(arr[i]);
-            }
-            else{
+            } else{
                 int16Arr[i] = 0;
             }
         }
@@ -551,17 +510,5 @@ public class Btreceiver extends AppCompatActivity {
 
         int check = ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT);
         return check == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private static String convertInputStreamToString(InputStream is) throws IOException {
-
-        ByteArrayOutputStream result = new ByteArrayOutputStream();
-        byte[] buffer = new byte[8192];
-        int length;
-        while ((length = is.read(buffer)) != -1) {
-            result.write(buffer, 0, length);
-        }
-
-        return result.toString("UTF-8");
     }
 }
