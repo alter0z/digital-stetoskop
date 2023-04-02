@@ -39,6 +39,7 @@ import androidx.core.content.ContextCompat;
 
 import com.tensorflow.android.R;
 import com.tensorflow.android.audio.features.CleanWavFile;
+import com.tensorflow.android.audio.features.NormalizeAudio;
 import com.tensorflow.android.services.MqttClient;
 
 import java.io.BufferedOutputStream;
@@ -66,10 +67,6 @@ import timber.log.Timber;
 
 @RequiresApi(api = Build.VERSION_CODES.S)
 public class Btreceiver extends AppCompatActivity {
-    private static final int AUDIO_SOURCE = MediaRecorder.AudioSource.MIC;
-    private static final int SAMPLE_RATE = 44100;
-    private static final int CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;
-    private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
     private static final int REQUEST_PERMISSION = 1;
     private int INTERVAL = 5000;
     public static final String TAG_ID = "id";
@@ -82,11 +79,15 @@ public class Btreceiver extends AppCompatActivity {
     LinearLayout pane;
     Button btnDisconnect;
     private BluetoothDevice device;
-    String data;
+    private byte[] data;
     private byte[] finalData;
     Handler handler = new Handler();
     Runnable runnable;
-    //    private MqttClient client;
+    private static final int SAMPLE_RATE = 8000;
+    private static final int CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_STEREO;
+    private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
+    private static final int BUFFER_SIZE = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT);
+    private MqttClient client;
     String id, username;
     private boolean isConnected = false;
     private boolean isContinuesData = false;
@@ -127,7 +128,7 @@ public class Btreceiver extends AppCompatActivity {
 
         popup = new Dialog(this);
 
-//        client = new MqttClient(this);
+        client = new MqttClient(this);
 
         back.setOnClickListener(view -> {
             if (!isConnected) {
@@ -187,6 +188,7 @@ public class Btreceiver extends AppCompatActivity {
                 listViewPairedDevice.setVisibility(View.VISIBLE);
                 btnDisconnect.setVisibility(View.GONE);
             }
+//            client.getPublish("php-mqtt/client/test/pasien",data); uncomment this to enable sending topic & message to the server
         });
 
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)) {
@@ -379,12 +381,12 @@ public class Btreceiver extends AppCompatActivity {
 
     private class ThreadConnected extends Thread {
         private final InputStream connectedInputStream;
-        private final OutputStream connectedOutputStream;
+        private final FileOutputStream connectedOutputStream;
         private final BluetoothSocket connectedSocket;
 
         public ThreadConnected(BluetoothSocket socket) {
             InputStream in = null;
-            OutputStream out = null;
+            FileOutputStream out = null;
             connectedSocket = socket;
 
             try {
@@ -396,9 +398,12 @@ public class Btreceiver extends AppCompatActivity {
             if (isExtStorageWritable() && checkPermission()) {
                 try {
                     ContextWrapper contextWrapper = new ContextWrapper(Btreceiver.this);
+//                    File audioDir = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_RECORDINGS);
+//                    File files = new File(audioDir,System.currentTimeMillis()+".wav");
                     File audioDir = contextWrapper.getExternalFilesDir("sample wav");
                     File files = new File(audioDir,"sample.wav");
-                    out = Files.newOutputStream(files.toPath());
+                    out = new FileOutputStream(files);
+                    writeWavHeader(out);
 
                 } catch (Exception e) {
                     Toast.makeText(Btreceiver.this, e.toString(), Toast.LENGTH_LONG).show();
@@ -413,9 +418,10 @@ public class Btreceiver extends AppCompatActivity {
 
         @Override
         public void run() {
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[BUFFER_SIZE];
             int bytesRead = 0;
             long audioLength = 0;
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
             // continuous data
             if (isConnected) {
@@ -428,16 +434,25 @@ public class Btreceiver extends AppCompatActivity {
                         bytesRead = connectedInputStream.read(buffer);
                         if (bytesRead != -1) {
                             connectedOutputStream.write(buffer, 0, bytesRead);
+                            connectedOutputStream.write(buffer, 0, bytesRead);
+                            byteArrayOutputStream.write(buffer, 0, bytesRead);
                             audioLength += bytesRead;
                         }
+                        data = byteArrayOutputStream.toByteArray();
                     }
                 } catch (IOException e) {
-                    long finalAudioLength = audioLength;
-                    runOnUiThread(() -> receiveStatus.setText(String.valueOf(finalAudioLength+36)));
-                    saveCleanWav();
+//                    long finalAudioLength = audioLength;
+//                    runOnUiThread(() -> receiveStatus.setText(String.valueOf(finalAudioLength+36)));
+//                    saveCleanWav();
                     try {
+//                        writeWavHeader(connectedOutputStream);
+                        ContextWrapper contextWrapper = new ContextWrapper(Btreceiver.this);
+                        File file = contextWrapper.getExternalFilesDir("sample wav");
+                        String audioFileAbsolutePath = file.getAbsolutePath()+"/sample.wav";
+                        NormalizeAudio normalizeAudio = new NormalizeAudio();
+                        normalizeAudio.normalize(audioFileAbsolutePath, Btreceiver.this);
                         connectedOutputStream.close();
-                        connectedSocket.close();
+//                        connectedSocket.close();
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -511,4 +526,154 @@ public class Btreceiver extends AppCompatActivity {
         int check = ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT);
         return check == PackageManager.PERMISSION_GRANTED;
     }
+
+    private void writeWavHeader(FileOutputStream outputStream) throws IOException {
+        long audioDataLength = outputStream.getChannel().size() - 44; // Subtract header size
+        long overallSize = audioDataLength + 36; // Add header size
+
+        byte[] header = new byte[44];
+
+        // RIFF chunk descriptor
+        header[0] = 'R';
+        header[1] = 'I';
+        header[2] = 'F';
+        header[3] = 'F';
+
+        // Overall size (file size - 8 bytes for RIFF and WAVE tags)
+        header[4] = (byte) (overallSize & 0xff);
+        header[5] = (byte) ((overallSize >> 8) & 0xff);
+        header[6] = (byte) ((overallSize >> 16) & 0xff);
+        header[7] = (byte) ((overallSize >> 24) & 0xff);
+
+        // WAVE chunk
+        header[8] = 'W';
+        header[9] = 'A';
+        header[10] = 'V';
+        header[11] = 'E';
+
+        // fmt sub-chunk
+        header[12] = 'f'; // Sub-chunk identifier
+        header[13] = 'm';
+        header[14] = 't';
+        header[15] = ' '; // Chunk size
+        header[16] = 16;
+        header[17] = 0;
+        header[18] = 0;
+        header[19] = 0;
+        // Audio format (PCM = 1)
+        header[20] = 1;
+        header[21] = 0;
+
+        // Number of channels (2 = stereo)
+        header[22] = (byte) (CHANNEL_CONFIG == AudioFormat.CHANNEL_IN_STEREO ? 2 : 1);
+        header[23] = 0;
+
+        // Sample rate
+        header[24] = (byte) (SAMPLE_RATE & 0xff);
+        header[25] = (byte) ((SAMPLE_RATE >> 8) & 0xff);
+        header[26] = (byte) ((SAMPLE_RATE >> 16) & 0xff);
+        header[27] = (byte) ((SAMPLE_RATE >> 24) & 0xff);
+
+        // Byte rate (Sample rate * Number of channels * Bits per sample / 8)
+        int byteRate = SAMPLE_RATE * (CHANNEL_CONFIG == AudioFormat.CHANNEL_IN_STEREO ? 2 : 1) * (AUDIO_FORMAT == AudioFormat.ENCODING_PCM_16BIT ? 2 : 1);
+        header[28] = (byte) (byteRate & 0xff);
+        header[29] = (byte) ((byteRate >> 8) & 0xff);
+        header[30] = (byte) ((byteRate >> 16) & 0xff);
+        header[31] = (byte) ((byteRate >> 24) & 0xff);
+
+        // Block align (Number of channels * Bits per sample / 8)
+        header[32] = (byte) ((CHANNEL_CONFIG == AudioFormat.CHANNEL_IN_STEREO ? 2 : 1) * (AUDIO_FORMAT == AudioFormat.ENCODING_PCM_16BIT ? 2 : 1));
+        header[33] = 0;
+
+        // Bits per sample
+        header[34] = (byte) (AUDIO_FORMAT == AudioFormat.ENCODING_PCM_16BIT ? 16 : 8);
+        header[35] = 0;
+
+        // data sub-chunk
+        header[36] = 'd'; // Sub-chunk identifier
+        header[37] = 'a';
+        header[38] = 't';
+        header[39] = 'a'; // Chunk size
+        header[40] = (byte) (audioDataLength & 0xff);
+        header[41] = (byte) ((audioDataLength >> 8) & 0xff);
+        header[42] = (byte) ((audioDataLength >> 16) & 0xff);
+        header[43] = (byte) ((audioDataLength >> 24) & 0xff);
+
+        outputStream.write(header);
+    }
+
+//    private void writeWavHeader(FileOutputStream outputStream) throws IOException {
+//        long audioDataLength = outputStream.getChannel().size() - 44; // Subtract header size
+//        long overallSize = audioDataLength + 36; // Add header size
+//
+//        byte[] header = new byte[44];
+//
+//        // RIFF chunk descriptor
+//        header[0] = 'R';
+//        header[1] = 'I';
+//        header[2] = 'F';
+//        header[3] = 'F';
+//
+//        // Overall size (file size - 8 bytes for RIFF and WAVE tags)
+//        header[4] = (byte) (overallSize & 0xff);
+//        header[5] = (byte) ((overallSize >> 8) & 0xff);
+//        header[6] = (byte) ((overallSize >> 16) & 0xff);
+//        header[7] = (byte) ((overallSize >> 24) & 0xff);
+//
+//        // WAVE chunk
+//        header[8] = 'W';
+//        header[9] = 'A';
+//        header[10] = 'V';
+//        header[11] = 'E';
+//
+//        // fmt sub-chunk
+//        header[12] = 'f'; // Sub-chunk identifier
+//        header[13] = 'm';
+//        header[14] = 't';
+//        header[15] = ' '; // Chunk size
+//        header[16] = 16;
+//        header[17] = 0;
+//        header[18] = 0;
+//        header[19] = 0;
+//        // Audio format (PCM = 1)
+//        header[20] = 1;
+//        header[21] = 0;
+//
+//        // Number of channels (2 = stereo)
+//        header[22] = (byte) (CHANNEL_CONFIG == AudioFormat.CHANNEL_IN_STEREO ? 2 : 1);
+//        header[23] = 0;
+//
+//        // Sample rate
+//        header[24] = (byte) (SAMPLE_RATE & 0xff);
+//        header[25] = (byte) ((SAMPLE_RATE >> 8) & 0xff);
+//        header[26] = (byte) ((SAMPLE_RATE >> 16) & 0xff);
+//        header[27] = (byte) ((SAMPLE_RATE >> 24) & 0xff);
+//
+//        // Byte rate (Sample rate * Number of channels * Bits per sample / 8)
+//        int byteRate = SAMPLE_RATE * (CHANNEL_CONFIG == AudioFormat.CHANNEL_IN_STEREO ? 2 : 1) * (AUDIO_FORMAT == AudioFormat.ENCODING_PCM_16BIT ? 2 : 1);
+//        header[28] = (byte) (byteRate & 0xff);
+//        header[29] = (byte) ((byteRate >> 8) & 0xff);
+//        header[30] = (byte) ((byteRate >> 16) & 0xff);
+//        header[31] = (byte) ((byteRate >> 24) & 0xff);
+//
+//        // Block align (Number of channels * Bits per sample / 8)
+//        header[32] = (byte) ((CHANNEL_CONFIG == AudioFormat.CHANNEL_IN_STEREO ? 2 : 1) * (AUDIO_FORMAT == AudioFormat.ENCODING_PCM_16BIT ? 2 : 1));
+//        header[33] = 0;
+//
+//        // Bits per sample
+//        header[34] = (byte) (8);
+//        header[35] = 0;
+//
+//        // data sub-chunk
+//        header[36] = 'd'; // Sub-chunk identifier
+//        header[37] = 'a';
+//        header[38] = 't';
+//        header[39] = 'a'; // Chunk size
+//        header[40] = (byte) (audioDataLength & 0xff);
+//        header[41] = (byte) ((audioDataLength >> 8) & 0xff);
+//        header[42] = (byte) ((audioDataLength >> 16) & 0xff);
+//        header[43] = (byte) ((audioDataLength >> 24) & 0xff);
+//
+//        outputStream.write(header);
+//    }
 }

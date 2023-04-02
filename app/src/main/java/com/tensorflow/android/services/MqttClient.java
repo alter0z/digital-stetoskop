@@ -77,10 +77,10 @@ public class MqttClient {
         Intrinsics.checkExpressionValueIsNotNull(broadcast, "Intent(applicationContex…, 0, intent, 0)\n        }");
     }
 
-    public void getPublish(String topic, String message) {
+    public void getPublish(String topic, byte[] message) {
 //        byte[] encodedPlayload;
 //        encodedPlayload = message.getBytes(StandardCharsets.UTF_8);
 //        MqttMessage theMessage = new MqttMessage(encodedPlayload);
-        client.publish(topic,message.getBytes(StandardCharsets.UTF_8),0,false);
+        client.publish(topic,message,0,false);
     }
 }
