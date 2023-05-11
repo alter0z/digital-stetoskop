@@ -84,7 +84,7 @@ public class Btreceiver extends AppCompatActivity {
     Handler handler = new Handler();
     Runnable runnable;
     private static final int SAMPLE_RATE = 8000;
-    private static final int CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_STEREO;
+    private static final int CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;
     private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
     private static final int BUFFER_SIZE = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT);
     private MqttClient client;
@@ -434,7 +434,7 @@ public class Btreceiver extends AppCompatActivity {
                         bytesRead = connectedInputStream.read(buffer);
                         if (bytesRead != -1) {
                             connectedOutputStream.write(buffer, 0, bytesRead);
-                            connectedOutputStream.write(buffer, 0, bytesRead);
+//                            connectedOutputStream.write(buffer, 0, bytesRead);
                             byteArrayOutputStream.write(buffer, 0, bytesRead);
                             audioLength += bytesRead;
                         }
@@ -565,7 +565,7 @@ public class Btreceiver extends AppCompatActivity {
         header[21] = 0;
 
         // Number of channels (2 = stereo)
-        header[22] = (byte) (CHANNEL_CONFIG == AudioFormat.CHANNEL_IN_STEREO ? 2 : 1);
+        header[22] = (byte) (CHANNEL_CONFIG == AudioFormat.CHANNEL_IN_MONO ? 1 : 2);
         header[23] = 0;
 
         // Sample rate
@@ -575,14 +575,14 @@ public class Btreceiver extends AppCompatActivity {
         header[27] = (byte) ((SAMPLE_RATE >> 24) & 0xff);
 
         // Byte rate (Sample rate * Number of channels * Bits per sample / 8)
-        int byteRate = SAMPLE_RATE * (CHANNEL_CONFIG == AudioFormat.CHANNEL_IN_STEREO ? 2 : 1) * (AUDIO_FORMAT == AudioFormat.ENCODING_PCM_16BIT ? 2 : 1);
+        int byteRate = SAMPLE_RATE * (CHANNEL_CONFIG == AudioFormat.CHANNEL_IN_MONO ? 1 : 2) * (AUDIO_FORMAT == AudioFormat.ENCODING_PCM_16BIT ? 2 : 1);
         header[28] = (byte) (byteRate & 0xff);
         header[29] = (byte) ((byteRate >> 8) & 0xff);
         header[30] = (byte) ((byteRate >> 16) & 0xff);
         header[31] = (byte) ((byteRate >> 24) & 0xff);
 
         // Block align (Number of channels * Bits per sample / 8)
-        header[32] = (byte) ((CHANNEL_CONFIG == AudioFormat.CHANNEL_IN_STEREO ? 2 : 1) * (AUDIO_FORMAT == AudioFormat.ENCODING_PCM_16BIT ? 2 : 1));
+        header[32] = (byte) ((CHANNEL_CONFIG == AudioFormat.CHANNEL_IN_MONO ? 1 : 2) * (AUDIO_FORMAT == AudioFormat.ENCODING_PCM_16BIT ? 2 : 1));
         header[33] = 0;
 
         // Bits per sample
