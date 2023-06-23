@@ -169,15 +169,14 @@ public class Btreceiver extends AppCompatActivity {
             });
         });
 
-        // mqtt service object
-//        client = new MqttClient(this);
-
         refresh.setOnClickListener(v -> {
-            startActivity(new Intent(Btreceiver.this, Btreceiver.class));
-            finish();
-//            saveSampleWav(data);
-//            saveCleanWav();
-//            client.getPublish("php-mqtt/client/test/pasien/"+username+"_"+id,"test");
+//            startActivity(new Intent(Btreceiver.this, Btreceiver.class));
+//            finish();
+            ContextWrapper contextWrapper = new ContextWrapper(this);
+            File externalStorage = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_RECORDINGS);
+            String audioDirPath = externalStorage.getAbsolutePath();
+            client.getPublish("foo/bar/baz", audioDirPath+"/1683819643452.wav");
+//            System.out.println("asw "+audioDirPath+"/1683819643452.wav");
         });
 
         btnDisconnect.setOnClickListener(v -> {
@@ -188,7 +187,11 @@ public class Btreceiver extends AppCompatActivity {
                 listViewPairedDevice.setVisibility(View.VISIBLE);
                 btnDisconnect.setVisibility(View.GONE);
             }
-//            client.getPublish("php-mqtt/client/test/pasien",data); uncomment this to enable sending topic & message to the server
+
+//            ContextWrapper contextWrapper = new ContextWrapper(this);
+//            File externalStorage = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_RECORDINGS);
+//            String audioDirPath = externalStorage.getAbsolutePath();
+//            client.getPublish("php-mqtt/client/test/pasien", audioDirPath+"1683819643452.wav");
         });
 
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)) {

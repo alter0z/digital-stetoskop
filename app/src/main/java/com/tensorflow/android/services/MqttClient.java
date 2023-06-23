@@ -19,6 +19,8 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
@@ -77,10 +79,23 @@ public class MqttClient {
         Intrinsics.checkExpressionValueIsNotNull(broadcast, "Intent(applicationContex…, 0, intent, 0)\n        }");
     }
 
-    public void getPublish(String topic, byte[] message) {
+    public void getPublish(String topic, String filePath) {
 //        byte[] encodedPlayload;
 //        encodedPlayload = message.getBytes(StandardCharsets.UTF_8);
 //        MqttMessage theMessage = new MqttMessage(encodedPlayload);
-        client.publish(topic,message,0,false);
+//        client.publish(topic,message,0,false);
+        try {
+            // Read the file
+            FileInputStream fileInputStream = new FileInputStream(filePath);
+            byte[] fileData = new byte[fileInputStream.available()];
+            fileInputStream.read(fileData);
+            fileInputStream.close();
+
+            // Publish the file
+            MqttMessage message = new MqttMessage(fileData);
+            client.publish(topic, message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,5 +1,7 @@
 package com.tensorflow.android.audio.features;
 
+import android.media.AudioFormat;
+import android.media.AudioRecord;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
@@ -17,7 +19,11 @@ Source based on https://github.com/Semantive/waveform-android/blob/master/librar
 public class WavFile {
     private enum IOState {READING, WRITING, CLOSED}
 
-    private final static int BUFFER_SIZE = 4096;
+//    private final static int BUFFER_SIZE = 4096;
+    private static final int SAMPLE_RATE = 8000;
+    private static final int CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;
+    private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
+    private static final int BUFFER_SIZE = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT);
     private final static int FMT_CHUNK_ID = 0x20746D66;
     private final static int DATA_CHUNK_ID = 0x61746164;
     private final static int RIFF_CHUNK_ID = 0x46464952;
@@ -177,8 +183,8 @@ public class WavFile {
                 // Check that the chunkSize (wav data length) is a multiple of the
                 // block align (bytes per frame)
                 if (chunkSize % wavFile.blockAlign != 0)
-//                    throw new WavFileException("Data Chunk size ("+chunkSize+") is not multiple of Block Align");
-                    chunkSize -= 2;
+                    throw new WavFileException("Data Chunk size ("+chunkSize+") is not multiple of Block Align");
+//                    chunkSize -= 2;
 
                 Log.v("chunkSize: ", String.valueOf(chunkSize));
                 Log.v("blockAlign: ", String.valueOf(wavFile.blockAlign));
