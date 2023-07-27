@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/teel_60"
+    android:background="@color/green_text"
     tools:context=".example.stetoskopdigital1.Login">
 
     <LinearLayout
@@ -41,7 +41,7 @@
                     android:layout_height="wrap_content"
                     android:text="Login"
                     android:textAlignment="center"
-                    android:textColor="@color/teal_200"
+                    android:textColor="@color/green_text"
                     android:textSize="28sp" />
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -51,7 +51,7 @@
                     app:boxStrokeWidthFocused="2dp"
                     app:boxStrokeWidth="0dp"
                     android:background="@drawable/field"
-                    app:boxStrokeColor="@color/teal_200"
+                    app:boxStrokeColor="@color/green_text"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -74,7 +74,7 @@
                     app:boxStrokeWidthFocused="2dp"
                     app:boxStrokeWidth="0dp"
                     android:background="@drawable/field"
-                    app:boxStrokeColor="@color/teal_200"
+                    app:boxStrokeColor="@color/green_text"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -103,7 +103,7 @@
                         android:layout_margin="5dp"
                         android:layout_marginTop="10dp"
                         android:layout_weight="2"
-                        android:backgroundTint="@color/teal_200"
+                        android:backgroundTint="@color/green_text"
                         android:padding="10dp"
                         android:text="Login"
                         android:textAllCaps="false"
@@ -121,9 +121,9 @@
                         android:padding="10dp"
                         android:text="Register"
                         android:textAllCaps="false"
-                        android:textColor="@color/teal_200"
+                        android:textColor="@color/green_text"
                         android:textSize="18sp"
-                        app:strokeColor="@color/teal_200"
+                        app:strokeColor="@color/green_text"
                         app:strokeWidth="2dp" />
 
                 </LinearLayout>

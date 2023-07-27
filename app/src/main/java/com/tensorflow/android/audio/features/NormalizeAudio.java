@@ -20,7 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class NormalizeAudio {
-    public void normalize(String sampleAudioFile, Context context) {
+    public void normalize(String sampleAudioFile, String fileName, Context context) {
         short[] audioData1 = null;
 
         int n = 0;
@@ -89,7 +89,7 @@ public class NormalizeAudio {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                 audioDir = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_RECORDINGS);
             }
-            File files = new File(audioDir,System.currentTimeMillis()+".wav");
+            File files = new File(audioDir,System.currentTimeMillis()+"-"+fileName+".wav");
             OutputStream out  = new FileOutputStream(files);
 
             for (byte value : end) {

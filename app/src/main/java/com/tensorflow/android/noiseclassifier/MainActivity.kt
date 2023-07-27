@@ -16,8 +16,9 @@ import com.tensorflow.android.R
 import com.tensorflow.android.audio.features.MFCC
 import com.tensorflow.android.audio.features.WavFile
 import com.tensorflow.android.audio.features.WavFileException
+import com.tensorflow.android.databinding.ActivityMainBinding
 import com.tensorflow.android.example.stetoskopdigital1.MainActivity1
-import kotlinx.android.synthetic.main.activity_main.*
+//import kotlinx.android.synthetic.main.activity_main.*
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.support.common.FileUtil
@@ -37,11 +38,13 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
-
+    private var _binding : ActivityMainBinding? = null
+    private val binding get() = _binding
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        _binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
 
         //  val languages = resources.getStringArray(R.array.Languages)
         val contextWrapper = ContextWrapper(this);
@@ -71,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         val TAG_USERNAME=intent.getStringExtra("username")
 
         Log.i("Username id", TAG_USERNAME.toString())
-        btnBack1.setOnClickListener {
+        binding?.btnBack1?.setOnClickListener {
             val intent = Intent(this, MainActivity1::class.java)
             // start your next activity
             intent.putExtra("id",TAG_ID)
@@ -79,13 +82,13 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        classify_button.setOnClickListener{
+        binding?.classifyButton?.setOnClickListener{
             try {
                 val selFilePath = spinner.selectedItem.toString()
                 val audioFilePath = "$audioDirPath/$selFilePath";
                 if (!TextUtils.isEmpty(selFilePath)) {
                     try {
-                        result_text.text = classifyNoise(audioFilePath)
+                        binding?.resultText?.text = classifyNoise(audioFilePath)
                     } catch (e: IllegalArgumentException) {
                         Toast.makeText(this@MainActivity, e.toString(), Toast.LENGTH_LONG).show();
                     }
@@ -93,7 +96,7 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this@MainActivity, "Please enter a message.", Toast.LENGTH_LONG).show();
                 }
             } catch (e: NullPointerException) {
-                result_text.text = "Please choose the wav file!"
+                binding?.resultText?.text = "Please choose the wav file!"
                 Toast.makeText(this@MainActivity, "Spinner still null", Toast.LENGTH_LONG).show();
             }
         }
@@ -291,5 +294,10 @@ class MainActivity : AppCompatActivity() {
             recognitions.add(pq.poll())
         }
         return recognitions
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

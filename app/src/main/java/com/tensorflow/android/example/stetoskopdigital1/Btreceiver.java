@@ -453,7 +453,7 @@ public class Btreceiver extends AppCompatActivity {
                         File file = contextWrapper.getExternalFilesDir("sample wav");
                         String audioFileAbsolutePath = file.getAbsolutePath()+"/sample.wav";
                         NormalizeAudio normalizeAudio = new NormalizeAudio();
-                        normalizeAudio.normalize(audioFileAbsolutePath, Btreceiver.this);
+                        normalizeAudio.normalize(audioFileAbsolutePath, "s",Btreceiver.this);
                         connectedOutputStream.close();
 //                        connectedSocket.close();
                     } catch (IOException ex) {

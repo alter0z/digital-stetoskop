@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: ./libs/serviceLibrary-release.aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/8002d2ae73b43aca3b1f186be78bfe4c/transformed/jetified-serviceLibrary-release/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/8002d2ae73b43aca3b1f186be78bfe4c/transformed/jetified-serviceLibrary-release/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/8002d2ae73b43aca3b1f186be78bfe4c/transformed/jetified-serviceLibrary-release/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/d13ae53d60b2917865fa43b45f739c36/transformed/jetified-serviceLibrary-release/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/d13ae53d60b2917865fa43b45f739c36/transformed/jetified-serviceLibrary-release/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/d13ae53d60b2917865fa43b45f739c36/transformed/jetified-serviceLibrary-release/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

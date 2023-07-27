@@ -112,7 +112,7 @@
                 android:paddingStart="8dp"
                 android:paddingTop="2dp"
                 android:text="@string/informasi"
-                android:textColor="@color/black"
+                android:textColor="@color/black_text"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toTopOf="@+id/textView3"
                 app:layout_constraintEnd_toEndOf="parent"

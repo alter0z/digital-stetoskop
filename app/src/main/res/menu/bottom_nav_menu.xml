@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/patient_home"
+        android:icon="@drawable/home"
+        android:title="@string/home" />
+
+    <item
+        android:id="@+id/patient_record"
+        android:icon="@drawable/heart_beat"
+        android:title="@string/rekam" />
+
+    <item
+        android:id="@+id/patient_predict"
+        android:icon="@drawable/signal"
+        android:title="@string/predict" />
+</menu>
