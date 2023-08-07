@@ -11,7 +11,7 @@ android {
         targetSdkVersion 33
         versionCode 1
         versionName "1.0"
-
+        buildConfigField("String","BASE_URL",'"https://vhd.telekardiologi.com/api/"')
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -37,6 +37,20 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
+    // retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+    // http logger
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
+
+    // lifecycle
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
+    implementation 'androidx.fragment:fragment-ktx:1.5.7'
+    implementation 'androidx.activity:activity-ktx:1.7.1'
+
     implementation 'com.github.bumptech.glide:glide:4.13.2'
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
