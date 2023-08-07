@@ -31,6 +31,8 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class Record : Fragment(), OnSocketConnectedListener {
     private var _binding: FragmentRecordBinding? = null
@@ -47,7 +49,7 @@ class Record : Fragment(), OnSocketConnectedListener {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.date.text = LocalDateTime.now().toString()
+        binding.date.text = formatDate(LocalDateTime.now())
         if (checkBtPermission()) {
             val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
             if (bluetoothAdapter.isEnabled) {
@@ -303,5 +305,11 @@ class Record : Fragment(), OnSocketConnectedListener {
         header[42] = (audioDataLength shr 16 and 0xffL).toByte()
         header[43] = (audioDataLength shr 24 and 0xffL).toByte()
         outputStream.write(header)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun formatDate(localDateTime: LocalDateTime): String {
+        val formatter = DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy", Locale.ENGLISH)
+        return localDateTime.format(formatter)
     }
 }
