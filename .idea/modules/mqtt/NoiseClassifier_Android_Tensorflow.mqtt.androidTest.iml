@@ -15,8 +15,7 @@
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
-    <output url="file://$MODULE_DIR$/../../../mqtt/build/intermediates/javac/debug/classes" />
-    <output-test url="file://$MODULE_DIR$/../../../mqtt/build/intermediates/javac/debugUnitTest/classes" />
+    <output-test url="file://$MODULE_DIR$/../../../mqtt/build/intermediates/javac/debugAndroidTest/classes" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../mqtt/build/generated/aidl_source_output_dir/debugAndroidTest/out" />
     <content url="file://$MODULE_DIR$/../../../mqtt/build/generated/ap_generated_sources/debugAndroidTest/out" />

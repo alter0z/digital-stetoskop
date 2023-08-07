@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.bumptech.glide.Glide
 import com.tensorflow.android.R
 import com.tensorflow.android.databinding.FragmentHomeBinding
 import com.tensorflow.android.databinding.FragmentRegisterAsDoctorBinding
@@ -25,6 +26,11 @@ class Home : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        Glide.with(requireActivity())
+            .load(R.drawable.profile_icon_design_free_vector).circleCrop()
+            .into(binding.profilePhoto)
+
         val screenWidth = resources.displayMetrics.widthPixels
         val predictColumnWidth = (screenWidth * 0.6).toInt()
         val infoColumnWidth = screenWidth - predictColumnWidth - (30*2)
