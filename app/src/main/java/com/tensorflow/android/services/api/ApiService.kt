@@ -1,7 +1,7 @@
 package com.tensorflow.android.services.api
 
-import com.tensorflow.android.services.response.auth.LoginResponse
-import com.tensorflow.android.services.response.auth.RegisterResponse
+import com.tensorflow.android.models.response.auth.LoginResponse
+import com.tensorflow.android.models.response.auth.RegisterResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Multipart

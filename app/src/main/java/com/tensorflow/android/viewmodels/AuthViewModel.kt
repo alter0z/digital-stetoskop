@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.tensorflow.android.repositories.AuthRepository
 import com.tensorflow.android.services.api.RequestState
-import com.tensorflow.android.services.response.auth.LoginResponse
-import com.tensorflow.android.services.response.auth.RegisterResponse
+import com.tensorflow.android.models.response.auth.LoginResponse
+import com.tensorflow.android.models.response.auth.RegisterResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.json.JSONException
