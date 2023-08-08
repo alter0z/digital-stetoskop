@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +30,8 @@ class Predict : Fragment() {
     private val binding get() = _binding!!
     private var adapter: FileListAdapter? = null
     private var layoutManager: RecyclerView.LayoutManager? = null
+    private val filteredList = ArrayList<FileModel>()
+    private val fileList = ArrayList<FileModel>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -44,8 +48,6 @@ class Predict : Fragment() {
 
         val audioDirPath = externalStorage.absolutePath
 
-        val fileList: ArrayList<FileModel> = ArrayList()
-
         File(audioDirPath).walk().forEach {
             if(it.absolutePath.endsWith(".wav")) fileList.add(FileModel(it.name, it.lastModified()))
         }
@@ -57,6 +59,17 @@ class Predict : Fragment() {
                 startActivity(Intent(requireContext(), PredictResultActivity::class.java).putExtra("FILE", file))
             }
         })
+
+        binding.searchInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val searchText = s.toString().trim()
+                filterData(searchText)
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
     }
 
     private fun setupFileList(list: ArrayList<FileModel>) {
@@ -64,5 +77,15 @@ class Predict : Fragment() {
         layoutManager = LinearLayoutManager(requireContext())
         binding.fileList.layoutManager = layoutManager
         binding.fileList.adapter = adapter
+    }
+
+    private fun filterData(query: String) {
+        filteredList.clear()
+
+        for (item in fileList) {
+            if (item.name?.contains(query, ignoreCase = true) == true) filteredList.add(item)
+        }
+
+        setupFileList(filteredList)
     }
 }
