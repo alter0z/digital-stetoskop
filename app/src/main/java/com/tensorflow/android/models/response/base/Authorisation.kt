@@ -1,4 +1,4 @@
-package com.tensorflow.android.models.response.auth
+package com.tensorflow.android.models.response.base
 
 import com.google.gson.annotations.SerializedName
 

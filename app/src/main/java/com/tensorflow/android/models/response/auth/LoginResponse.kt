@@ -1,6 +1,8 @@
 package com.tensorflow.android.models.response.auth
 
 import com.google.gson.annotations.SerializedName
+import com.tensorflow.android.models.response.base.Authorisation
+import com.tensorflow.android.models.response.base.User
 
 data class LoginResponse(
 
