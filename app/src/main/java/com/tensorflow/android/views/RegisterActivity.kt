@@ -28,13 +28,20 @@ class RegisterActivity : AppCompatActivity() {
         val flags: Int = decorView.systemUiVisibility
         decorView.systemUiVisibility = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
-        setupRegisterAs()
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.frame)
+        val patient = RegisterAsPatient()
+        val doctor = RegisterAsDoctor()
+        setupRegisterAs(patient, doctor)
 
         binding?.login?.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
 
+
+        binding?.register?.setOnClickListener {
+            if (currentFragment is RegisterAsPatient) patient.register() else doctor.register()
+        }
     }
 
     private fun replaceFragment(fragment: Fragment){
@@ -44,14 +51,14 @@ class RegisterActivity : AppCompatActivity() {
         fragmentTransaction.commit()
     }
 
-    private fun setupRegisterAs() {
-        replaceFragment(RegisterAsPatient())
+    private fun setupRegisterAs(patient: RegisterAsPatient, doctor: RegisterAsDoctor) {
+        replaceFragment(patient)
         binding?.doctorInactive?.setOnClickListener {
             binding?.patientActive?.visibility = View.INVISIBLE
             binding?.patientInactive?.visibility = View.VISIBLE
             binding?.doctorInactive?.visibility = View.INVISIBLE
             binding?.doctorActive?.visibility = View.VISIBLE
-            replaceFragment(RegisterAsDoctor())
+            replaceFragment(doctor)
         }
 
         binding?.patientInactive?.setOnClickListener {
@@ -59,7 +66,7 @@ class RegisterActivity : AppCompatActivity() {
             binding?.patientInactive?.visibility = View.INVISIBLE
             binding?.doctorInactive?.visibility = View.VISIBLE
             binding?.doctorActive?.visibility = View.INVISIBLE
-            replaceFragment(RegisterAsPatient())
+            replaceFragment(patient)
         }
     }
 

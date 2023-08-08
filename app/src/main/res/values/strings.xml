@@ -58,4 +58,11 @@
     <string name="record_result">Record Result</string>
     <string name="status">Status</string>
     <string name="please_wait">Please Wait</string>
+    <string name="jenis_kelamin">Jenis Kelamin</string>
+    <string name="alamat">Alamat</string>
+    <string name="masukkan_alamat">Masukkan Alamat</string>
+    <string-array name="gender_options">
+        <item>Laki-Laki</item>
+        <item>Perempuan</item>
+    </string-array>
 </resources>

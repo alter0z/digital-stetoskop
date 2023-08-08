@@ -38,6 +38,100 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
+        android:id="@+id/name_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="29dp"
+        android:fontFamily="@font/poppins_medium"
+        android:text="@string/nama"
+        android:textColor="@color/white_text"
+        android:textSize="13sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/email" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="29dp"
+        android:layout_marginTop="15dp"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="7dp"
+        android:background="@drawable/field"
+        android:inputType="text"
+        android:hint="@string/masukkan_nama_lengkap"
+        android:textColorHint="@color/black_input_text_hint"
+        android:textSize="16sp"
+        android:textColor="@color/black_input_text"
+        android:fontFamily="@font/poppins_regular"
+        app:layout_constraintTop_toBottomOf="@id/name_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/gender_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="29dp"
+        android:fontFamily="@font/poppins_medium"
+        android:text="@string/jenis_kelamin"
+        android:textColor="@color/white_text"
+        android:textSize="13sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/name" />
+
+    <Spinner
+        android:id="@+id/gender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="29dp"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="10dp"
+        android:textSize="16sp"
+        android:textColor="@color/black_input_text"
+        android:fontFamily="@font/poppins_regular"
+        android:background="@drawable/field"
+        android:popupBackground="@drawable/field"
+        app:layout_constraintTop_toBottomOf="@id/gender_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/address_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="29dp"
+        android:fontFamily="@font/poppins_medium"
+        android:text="@string/alamat"
+        android:textColor="@color/white_text"
+        android:textSize="13sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gender" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="29dp"
+        android:layout_marginTop="15dp"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="7dp"
+        android:background="@drawable/field"
+        android:inputType="textMultiLine"
+        android:hint="@string/masukkan_alamat"
+        android:textColorHint="@color/black_input_text_hint"
+        android:textSize="16sp"
+        android:textColor="@color/black_input_text"
+        android:fontFamily="@font/poppins_regular"
+        app:layout_constraintTop_toBottomOf="@id/address_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
         android:id="@+id/sip_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -128,7 +222,7 @@
         android:textColor="@color/white_text"
         android:textSize="13sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/email" />
+        app:layout_constraintTop_toBottomOf="@+id/address" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/password_frame"
