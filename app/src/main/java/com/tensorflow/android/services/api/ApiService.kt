@@ -2,11 +2,15 @@ package com.tensorflow.android.services.api
 
 import com.tensorflow.android.models.response.auth.LoginResponse
 import com.tensorflow.android.models.response.auth.RegisterResponse
+import com.tensorflow.android.models.response.base.BaseDataResponse
+import com.tensorflow.android.models.response.base.User
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Path
 
 interface ApiService {
     @Multipart
@@ -28,4 +32,7 @@ interface ApiService {
                                @Part("password") password: RequestBody,
                                @Part ktp: MultipartBody.Part,
                                @Part sip: MultipartBody.Part): RegisterResponse
+
+    @GET("user/{id}")
+    suspend fun getUserById(@Path("id") id: Int): BaseDataResponse<User>
 }

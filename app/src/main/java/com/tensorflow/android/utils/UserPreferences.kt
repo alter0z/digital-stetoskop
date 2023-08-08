@@ -26,4 +26,11 @@ class UserPreferences(context: Context) {
     }
 
     fun isLogin(): Boolean? = sharedPreferences?.getBoolean("LOGIN", false)
+
+    fun setUserId(id: Int) {
+        editor?.putInt("UID", id)
+        editor?.commit()
+    }
+
+    fun getUserId(): Int? = sharedPreferences?.getInt("UID", 0)
 }

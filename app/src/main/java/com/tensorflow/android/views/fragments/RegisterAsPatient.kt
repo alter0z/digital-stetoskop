@@ -120,6 +120,7 @@ class RegisterAsPatient : Fragment() {
                             is RequestState.Success -> {
                                 userPreferences?.setLogin(true)
                                 it.data.authorisation?.token?.let { token -> userPreferences?.setToken(token) }
+                                it.data.user?.id?.let { id -> userPreferences?.setUserId(id) }
                                 loading?.hide()
                                 startActivity(Intent(requireActivity(), PatientMainActivity::class.java))
                                 requireActivity().finish()
