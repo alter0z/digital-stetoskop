@@ -131,37 +131,37 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/phone_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="29dp"
-        android:fontFamily="@font/poppins_medium"
-        android:text="@string/nomor_hp"
-        android:textColor="@color/white_text"
-        android:textSize="13sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/address" />
+<!--    <TextView-->
+<!--        android:id="@+id/phone_label"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:layout_marginStart="29dp"-->
+<!--        android:fontFamily="@font/poppins_medium"-->
+<!--        android:text="@string/nomor_hp"-->
+<!--        android:textColor="@color/white_text"-->
+<!--        android:textSize="13sp"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/address" />-->
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/phone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="29dp"
-        android:layout_marginTop="15dp"
-        android:paddingHorizontal="15dp"
-        android:paddingVertical="7dp"
-        android:background="@drawable/field"
-        android:inputType="number"
-        android:hint="@string/masukkan_nomor_hp"
-        android:textColorHint="@color/black_input_text_hint"
-        android:textSize="16sp"
-        android:textColor="@color/black_input_text"
-        android:fontFamily="@font/poppins_regular"
-        app:layout_constraintTop_toBottomOf="@id/phone_label"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+<!--    <com.google.android.material.textfield.TextInputEditText-->
+<!--        android:id="@+id/phone"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginHorizontal="29dp"-->
+<!--        android:layout_marginTop="15dp"-->
+<!--        android:paddingHorizontal="15dp"-->
+<!--        android:paddingVertical="7dp"-->
+<!--        android:background="@drawable/field"-->
+<!--        android:inputType="number"-->
+<!--        android:hint="@string/masukkan_nomor_hp"-->
+<!--        android:textColorHint="@color/black_input_text_hint"-->
+<!--        android:textSize="16sp"-->
+<!--        android:textColor="@color/black_input_text"-->
+<!--        android:fontFamily="@font/poppins_regular"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/phone_label"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent" />-->
 
     <TextView
         android:id="@+id/password_label"
@@ -174,7 +174,7 @@
         android:textColor="@color/white_text"
         android:textSize="13sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/phone" />
+        app:layout_constraintTop_toBottomOf="@+id/address" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/password_frame"

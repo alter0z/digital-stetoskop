@@ -15,6 +15,7 @@ import com.tensorflow.android.views.fragments.RegisterAsPatient
 class RegisterActivity : AppCompatActivity() {
     private var _binding : ActivityRegisterBinding? = null
     private val binding get() = _binding
+    private var currentFragment: Fragment? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityRegisterBinding.inflate(layoutInflater)
@@ -28,7 +29,7 @@ class RegisterActivity : AppCompatActivity() {
         val flags: Int = decorView.systemUiVisibility
         decorView.systemUiVisibility = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
-        val currentFragment = supportFragmentManager.findFragmentById(R.id.frame)
+        currentFragment = supportFragmentManager.findFragmentById(R.id.frame)
         val patient = RegisterAsPatient()
         val doctor = RegisterAsDoctor()
         setupRegisterAs(patient, doctor)
@@ -40,7 +41,8 @@ class RegisterActivity : AppCompatActivity() {
 
 
         binding?.register?.setOnClickListener {
-            if (currentFragment is RegisterAsPatient) patient.register() else doctor.register()
+            if (currentFragment is RegisterAsPatient) patient.register()
+            if (currentFragment is RegisterAsDoctor) doctor.register()
         }
     }
 
@@ -49,6 +51,7 @@ class RegisterActivity : AppCompatActivity() {
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.frame,fragment)
         fragmentTransaction.commit()
+        currentFragment = fragment
     }
 
     private fun setupRegisterAs(patient: RegisterAsPatient, doctor: RegisterAsDoctor) {

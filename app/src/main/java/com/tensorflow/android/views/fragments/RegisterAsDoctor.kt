@@ -149,10 +149,10 @@ class RegisterAsDoctor : Fragment() {
         val password = binding.password.text.toString()
         val confirmPassword = binding.passwordConfirm.text.toString()
         when {
-            name.isEmpty() -> binding.name.error = "Email tidak boleh kosong!"
-            address.isEmpty() -> binding.address.error = "Email tidak boleh kosong!"
             email.isEmpty() -> binding.email.error = "Email tidak boleh kosong!"
             !email.isValidEmail() -> binding.email.error = "Pola email salah!"
+            name.isEmpty() -> binding.name.error = "Nama tidak boleh kosong!"
+            address.isEmpty() -> binding.address.error = "Alamat tidak boleh kosong!"
             password.isEmpty() -> binding.password.error = "Buat password anda!"
             password.length < 8 -> binding.password.error = "Password minimal 8 karakter!"
             confirmPassword.isEmpty() -> binding.passwordConfirm.error = "Konfirmasi password anda!"
