@@ -19,6 +19,7 @@ import com.tensorflow.android.services.api.RequestState
 import com.tensorflow.android.utils.LoadingDialog
 import com.tensorflow.android.utils.UserPreferences
 import com.tensorflow.android.viewmodels.AuthViewModel
+import com.tensorflow.android.views.doctors.DoctorMainActivity
 import com.tensorflow.android.views.patients.PatientMainActivity
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -89,7 +90,7 @@ class LoginActivity : AppCompatActivity() {
                                 it.data.authorisation?.token?.let { token -> userPreferences?.setToken(token) }
                                 it.data.user?.id?.let { id -> userPreferences?.setUserId(id) }
                                 loading?.hide()
-                                startActivity(Intent(this, PatientMainActivity::class.java))
+                                startActivity(Intent(this, if (it.data.user?.role?.equals("pasien") == true) PatientMainActivity::class.java else DoctorMainActivity::class.java))
                                 finish()
                             }
 

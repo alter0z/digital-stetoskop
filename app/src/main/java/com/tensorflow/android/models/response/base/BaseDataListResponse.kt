@@ -2,9 +2,9 @@ package com.tensorflow.android.models.response.base
 
 import com.google.gson.annotations.SerializedName
 
-data class BaseDataResponse<out T>(
+data class BaseDataListResponse<out T>(
     @field:SerializedName("data")
-    val data: T? = null,
+    val data: List<T>? = null,
 
     @field:SerializedName("message")
     val message: String? = null,

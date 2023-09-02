@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/patient_bottom_navigation"
+    app:startDestination="@+id/doctor_home">
+
+    <fragment
+        android:id="@+id/doctor_home"
+        android:name="com.tensorflow.android.views.fragments.doctors.Home"
+        android:label="@string/home"
+        tools:layout="@layout/fragment_home_doctor" />
+
+    <fragment
+        android:id="@+id/doctor_record"
+        android:name="com.tensorflow.android.views.fragments.patients.Record"
+        android:label="@string/rekam"
+        tools:layout="@layout/fragment_record" />
+
+</navigation>

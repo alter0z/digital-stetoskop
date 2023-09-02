@@ -46,7 +46,7 @@
     <string name="lihat_data">Lihat Data</string>
     <string name="mari_sambungkan_device_ke_bluetooth">Mari Sambungkan Device ke Bluetooth</string>
     <string name="lakukan_rekaman_jantung">Lakukan Rekaman Jantung</string>
-    <string name="atur_device">Atur Device</string>
+    <string name="atur_device">Device belum diatur</string>
     <string name="rekam_jantung">Rekam Jantung</string>
     <string name="atur_device_bluetooth">Atur Device Bluetooth</string>
     <string name="refresh">Refresh</string>
@@ -61,6 +61,11 @@
     <string name="jenis_kelamin">Jenis Kelamin</string>
     <string name="alamat">Alamat</string>
     <string name="masukkan_alamat">Masukkan Alamat</string>
+    <string name="sip">SIP</string>
+    <string name="detail">Detail</string>
+    <string name="detail_patient">Detail Patient</string>
+    <string name="upload_signal_data">Upload Signal Data</string>
+    <string name="choose_file">choose file</string>
     <string-array name="gender_options">
         <item>Laki-Laki</item>
         <item>Perempuan</item>
