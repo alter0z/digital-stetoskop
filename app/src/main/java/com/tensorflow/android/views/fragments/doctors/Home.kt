@@ -24,6 +24,7 @@ import com.tensorflow.android.utils.LoadingDialog
 import com.tensorflow.android.utils.UserPreferences
 import com.tensorflow.android.viewmodels.DoctorViewModel
 import com.tensorflow.android.views.ConnectBluetoothActivity
+import com.tensorflow.android.views.LoginActivity
 import com.tensorflow.android.views.doctors.PatientDetailActivity
 
 class Home : Fragment() {
@@ -73,6 +74,14 @@ class Home : Fragment() {
         })
 
         binding.connect.setOnClickListener { startActivity(Intent(requireContext(), ConnectBluetoothActivity::class.java)) }
+        binding.logout.setOnClickListener {
+            userPreferences?.setToken("")
+            userPreferences?.setUserRole("")
+            userPreferences?.setUserId(0)
+            userPreferences?.setLogin(false)
+            startActivity(Intent(requireContext(), LoginActivity::class.java))
+            activity?.finish()
+        }
     }
 
     private fun setupListView() {

@@ -1,21 +1,29 @@
 package com.tensorflow.android.views
 
 import android.Manifest
+import android.app.AlertDialog
+import android.app.DownloadManager
+import android.content.Context
 import android.content.ContextWrapper
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaRecorder
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.components.Description
@@ -34,6 +42,14 @@ import com.tensorflow.android.databinding.ActivityPredictResultBinding
 import com.tensorflow.android.models.DeviceModel
 import com.tensorflow.android.models.FileModel
 import com.tensorflow.android.noiseclassifier.Recognition
+import com.tensorflow.android.services.api.RequestState
+import com.tensorflow.android.utils.LoadingDialog
+import com.tensorflow.android.utils.UserPreferences
+import com.tensorflow.android.viewmodels.PatientViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.support.common.FileUtil
@@ -65,30 +81,32 @@ class PredictResultActivity : AppCompatActivity() {
     private var adapter: PredictResultListAdapter? = null
     private var layoutManager: RecyclerView.LayoutManager? = null
     val list = ArrayList<String>()
+    private val viewModel: PatientViewModel by viewModels()
+    private var userPreferences: UserPreferences? = null
+    private var loading: LoadingDialog? = null
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityPredictResultBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
-        val file = intent.getParcelableExtra<FileModel>("FILE") as FileModel
-        binding?.fileName?.text = file.name
-        val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
-        val formattedDate = file.date?.let { Date(it) }?.let { dateFormat.format(it) }
-        binding?.date?.text = formattedDate
+        userPreferences = UserPreferences(this)
+        loading = LoadingDialog(this)
 
+//        val file = intent.getParcelableExtra<FileModel>("FILE") as FileModel
+        val id = intent.getIntExtra("ID", 0)
+//        binding?.fileName?.text = file.name
+//        val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+//        val formattedDate = file.date?.let { Date(it) }?.let { dateFormat.format(it) }
+//        binding?.date?.text = formattedDate
+
+        setupChart()
         val contextWrapper = ContextWrapper(this);
         val externalStorage: File = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_RECORDINGS)!!
         val audioDirPath = externalStorage.absolutePath
-        val audioFilePath = "$audioDirPath/${file.name}";
-        setupChart()
-        processWavFileData(audioFilePath)
+        fetchDetailPredict(id, audioDirPath)
 
         setupResultList()
-
-        binding?.predict?.setOnClickListener {
-            predict(file)
-        }
     }
 
     private fun setupResultList() {
@@ -298,14 +316,14 @@ class PredictResultActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
-    private fun predict(file: FileModel) {
+    private fun predict(fileName: String) {
         val contextWrapper = ContextWrapper(this);
         val externalStorage: File = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_RECORDINGS)!!
         val audioDirPath = externalStorage.absolutePath
 
         try {
-            val audioFilePath = "$audioDirPath/${file.name}";
-            if (!TextUtils.isEmpty(file.name)) {
+            val audioFilePath = "$audioDirPath/$fileName"
+            if (!TextUtils.isEmpty(fileName)) {
                 try {
                     val result = classifyNoise(audioFilePath)
 
@@ -545,6 +563,78 @@ class PredictResultActivity : AppCompatActivity() {
 //            }
 //        }
 //    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    private fun fetchDetailPredict(id: Int, audioDirPath: String) {
+        viewModel.getPredict(id).observe(this) {
+            if (it != null) {
+                when (it) {
+                    is RequestState.Loading -> loading?.show()
+                    is RequestState.Success -> {
+                        loading?.hide()
+                        binding?.fileName?.text = it.data.data?.get(0)?.suara
+                        binding?.doctor?.text = "Dokter : Galih Santoso"
+                        binding?.date?.text = it.data.data?.get(0)?.createdAt?.let { date -> formatDate(date) }
+                        binding?.status?.text = it.data.data?.get(0)?.jenis
+                        val audioFilePath = "$audioDirPath/${it.data.data?.get(0)?.suara}"
+                        try {
+                            processWavFileData(audioFilePath)
+                        } catch (e: Exception) {
+                            val fileUrl = "https://vhd.telekardiologi.com/${it.data.data?.get(0)?.filePath}"
+                            downloadFile(this, fileUrl, it.data.data?.get(0)?.suara ?: "unknown", audioFilePath)
+                        }
+
+                        if (it.data.data?.get(0)?.result != "5") {
+                            binding?.frame?.setCardBackgroundColor(ContextCompat.getColor(this, R.color.red))
+                            binding?.icon?.setImageResource(R.drawable.x_circle)
+                        }
+
+                        binding?.predict?.setOnClickListener { v ->
+                            it.data.data?.get(0)?.suara?.let { fileName -> predict(fileName) }
+                        }
+                    }
+                    is RequestState.Error -> {
+                        loading?.hide()
+                        AlertDialog.Builder(this).apply {
+                            setTitle("Peringatan!")
+                            setMessage(it.message)
+                            setPositiveButton("Oke") { _, _ -> }
+                            create()
+                            show()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun formatDate(inputDate: String): String {
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'", Locale.US)
+        val outputFormat = SimpleDateFormat("d MMMM yyyy HH:mm", Locale.US)
+
+        val date = inputFormat.parse(inputDate)
+        return outputFormat.format(date)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    fun downloadFile(context: Context, url: String, fileName: String, audioFilePath: String) {
+        loading?.show()
+        val request = DownloadManager.Request(Uri.parse(url))
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
+        request.setTitle("Downloading File")
+        request.setDescription("Downloading...")
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+        request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_RECORDINGS, fileName)
+
+        val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        downloadManager.enqueue(request)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(3000)
+            processWavFileData(audioFilePath)
+            loading?.hide()
+        }
+    }
 
     override fun onDestroy() {
         super.onDestroy()

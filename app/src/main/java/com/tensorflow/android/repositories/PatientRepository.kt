@@ -8,7 +8,7 @@ class PatientRepository {
     private val client = ApiConfig.getApiService()
 
     suspend fun getUserById(id: Int) = client.getUserById(id)
-    suspend fun sendFile(name: RequestBody, file: MultipartBody.Part) = client.sendSignalFile(name, file)
+    suspend fun sendFile(id: RequestBody, file: MultipartBody.Part) = client.sendSignalFile(id, file)
     suspend fun getUserPredict(id: Int) = client.getUserPredict(id)
     suspend fun getPredict(id: Int) = client.getPredict(id)
 }

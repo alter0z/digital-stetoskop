@@ -39,7 +39,10 @@ class PredictResultListAdapter(private val context: Context): RecyclerView.Adapt
         with(holder) {
             with(fileList[position]) {
                 binding.status.text = this
-                if (this != "Normal") binding.frame.setCardBackgroundColor(ContextCompat.getColor(context, R.color.blue))
+                if (this != "Normal") {
+                    binding.frame.setCardBackgroundColor(ContextCompat.getColor(context, R.color.red))
+                    binding.icon.setImageResource(R.drawable.x_circle)
+                }
             }
         }
     }

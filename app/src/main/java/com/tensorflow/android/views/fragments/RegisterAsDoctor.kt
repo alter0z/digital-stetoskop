@@ -178,6 +178,7 @@ class RegisterAsDoctor : Fragment() {
                                 userPreferences?.setLogin(true)
                                 it.data.authorisation?.token?.let { token -> userPreferences?.setToken(token) }
                                 it.data.user?.id?.let { id -> userPreferences?.setUserId(id) }
+                                it.data.user?.role?.let { role -> userPreferences?.setUserRole(role) }
                                 loading?.hide()
                                 startActivity(Intent(requireActivity(), PatientMainActivity::class.java))
                                 requireActivity().finish()

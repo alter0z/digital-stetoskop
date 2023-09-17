@@ -1,6 +1,7 @@
 package com.tensorflow.android.views.fragments.patients
 
 import android.Manifest
+import android.app.AlertDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothProfile
@@ -17,14 +18,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.tensorflow.android.audio.features.NormalizeAudio
 import com.tensorflow.android.databinding.FragmentRecordBinding
 import com.tensorflow.android.example.stetoskopdigital1.Btreceiver
 import com.tensorflow.android.listeners.OnSocketConnectedListener
+import com.tensorflow.android.services.api.RequestState
 import com.tensorflow.android.utils.BluetoothSocketHolder
+import com.tensorflow.android.utils.LoadingDialog
+import com.tensorflow.android.utils.UserPreferences
+import com.tensorflow.android.viewmodels.PatientViewModel
 import com.tensorflow.android.views.ConnectBluetoothActivity
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -38,15 +52,20 @@ class Record : Fragment(), OnSocketConnectedListener {
     private var _binding: FragmentRecordBinding? = null
     private val binding get() = _binding!!
     private var myThreadConnected: ThreadConnected? = null
+    private val viewModel: PatientViewModel by viewModels()
+    private var loading: LoadingDialog? = null
+    private var userPreferences: UserPreferences? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRecordBinding.inflate(inflater,container,false)
+        loading = LoadingDialog((activity as AppCompatActivity?)!!)
+        userPreferences = UserPreferences(requireActivity())
         return binding.root
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.date.text = formatDate(LocalDateTime.now())
@@ -88,7 +107,7 @@ class Record : Fragment(), OnSocketConnectedListener {
                 binding.fileName.error = "please insert file name first"
             } else {
                 if (socket != null) {
-                    myThreadConnected = socket?.let { it1 -> ThreadConnected(it1) }
+                    myThreadConnected = ThreadConnected(socket)
                     myThreadConnected!!.start()
                 } else Toast.makeText(requireContext(), "Connect to  your device first!", Toast.LENGTH_LONG).show()
             }
@@ -96,6 +115,43 @@ class Record : Fragment(), OnSocketConnectedListener {
 
         binding.stop.setOnClickListener {
             myThreadConnected?.cancel()
+            val contextWrapper = ContextWrapper(context)
+            val externalStorage: File = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_RECORDINGS)!!
+            val audioDirPath = externalStorage.absolutePath
+            val audioFilePath = audioDirPath
+            val latestWavFile = getLatestWavFile(audioFilePath)
+            if (latestWavFile != null) {
+                val requestWavFile = latestWavFile.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+                val wavFilePart = requestWavFile.let { MultipartBody.Part.createFormData("file", latestWavFile.name, it) }
+                val idBody = RequestBody.create("text/plain".toMediaTypeOrNull(), userPreferences?.getUserId().toString())
+                viewModel.sendFile(idBody, wavFilePart).observe(viewLifecycleOwner) {
+                    if (it != null) {
+                        when (it) {
+                            is RequestState.Loading -> loading?.show()
+                            is RequestState.Success -> {
+                                loading?.hide()
+                                AlertDialog.Builder(context).apply {
+                                    setTitle("Sucess!")
+                                    setMessage(it.data.message)
+                                    setPositiveButton("Oke") { _, _ -> }
+                                    create()
+                                    show()
+                                }
+                            }
+                            is RequestState.Error -> {
+                                loading?.hide()
+                                AlertDialog.Builder(context).apply {
+                                    setTitle("Peringatan!")
+                                    setMessage(it.message)
+                                    setPositiveButton("Oke") { _, _ -> }
+                                    create()
+                                    show()
+                                }
+                            }
+                        }
+                    }
+                }
+            } else Toast.makeText(context, "WAV file not fount", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -311,5 +367,23 @@ class Record : Fragment(), OnSocketConnectedListener {
     fun formatDate(localDateTime: LocalDateTime): String {
         val formatter = DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy", Locale.ENGLISH)
         return localDateTime.format(formatter)
+    }
+
+    fun getLatestWavFile(directoryPath: String): File? {
+        val dir = File(directoryPath)
+
+        if (dir.exists() && dir.isDirectory) {
+            val wavFiles = dir.listFiles { file -> file.isFile && file.extension == "wav" }
+
+            if (wavFiles != null) {
+                if (wavFiles.isNotEmpty()) {
+                    val sortedWavFiles = wavFiles.sortedByDescending { it.lastModified() }
+
+                    return sortedWavFiles[0]
+                }
+            }
+        }
+
+        return null
     }
 }

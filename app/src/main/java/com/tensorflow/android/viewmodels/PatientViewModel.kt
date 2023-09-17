@@ -29,10 +29,10 @@ class PatientViewModel: ViewModel() {
         }
     }
 
-    fun sendFile(name: RequestBody, file: MultipartBody.Part): LiveData<RequestState<BaseDataResponse<WavRecordResponse>>> = liveData {
+    fun sendFile(id: RequestBody, file: MultipartBody.Part): LiveData<RequestState<BaseDataResponse<WavRecordResponse>>> = liveData {
         emit(RequestState.Loading)
         try {
-            val response = repository.sendFile(name, file)
+            val response = repository.sendFile(id, file)
             emit(RequestState.Success(response))
         } catch (e: HttpException) {
             emit(RequestState.Error(try { e.response()?.errorBody()?.string()?.let { JSONObject(it).get("error") } } catch (e: JSONException) { e.localizedMessage } as String))

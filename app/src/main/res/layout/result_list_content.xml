@@ -31,7 +31,7 @@
             tools:text="Normal" />
 
         <ImageView
-            android:id="@+id/search"
+            android:id="@+id/icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/check_circle"

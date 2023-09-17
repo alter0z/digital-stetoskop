@@ -33,4 +33,11 @@ class UserPreferences(context: Context) {
     }
 
     fun getUserId(): Int? = sharedPreferences?.getInt("UID", 0)
+
+    fun setUserRole(role: String) {
+        editor?.putString("ROLE", role)
+        editor?.commit()
+    }
+
+    fun getUserRole(): String? = sharedPreferences?.getString("ROLE", "")
 }

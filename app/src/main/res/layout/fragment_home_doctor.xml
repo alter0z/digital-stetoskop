@@ -31,6 +31,17 @@
             app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="@string/icon" />
 
+        <ImageView
+            android:id="@+id/logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/logout"
+            app:layout_constraintEnd_toStartOf="@+id/profile_photo"
+            app:layout_constraintTop_toTopOf="@+id/profile_photo"
+            app:layout_constraintBottom_toBottomOf="@+id/profile_photo"
+            android:contentDescription="@string/icon" />
+
         <TextView
             android:id="@+id/grammar"
             android:layout_width="wrap_content"

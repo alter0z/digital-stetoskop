@@ -40,7 +40,7 @@ interface ApiService {
 
     @Multipart
     @POST("ownCheck")
-    suspend fun sendSignalFile(@Part("user_id") name: RequestBody,
+    suspend fun sendSignalFile(@Part("user_id") id: RequestBody,
                                @Part file: MultipartBody.Part): BaseDataResponse<WavRecordResponse>
 
     @GET("prediksi/user/{id}")
